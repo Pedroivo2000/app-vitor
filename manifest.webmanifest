@@ -1,0 +1,15 @@
+{
+  "name": "Vitor Freitas",
+  "short_name": "Vitor Freitas",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B1F3B",
+  "theme_color": "#0B1F3B",
+  "icons": [
+    {
+      "src": "/icone.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
