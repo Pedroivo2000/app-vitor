@@ -13,6 +13,21 @@
 <link rel="apple-touch-icon" sizes="512x512" href="icone.png">
 
 <style>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>App Vitor Freitas</title>
+
+<!-- Favicon -->
+<link rel="icon" type="image/png" sizes="512x512" href="icone.png">
+
+<!-- Apple Touch Icon (iPhone) -->
+<link rel="apple-touch-icon" sizes="512x512" href="icone.png">
+
+<style>
 body {
     margin: 0;
     padding: 0;
@@ -51,6 +66,25 @@ button {
 button:hover {
     opacity: 0.9;
 }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <img src="capa.png" class="logo" alt="Vitor Freitas">
+
+    <button onclick="acessar()">Acessar</button>
+</div>
+
+<script>
+function acessar() {
+    window.location.href = "https://app.powerbi.com/view?r=eyJrIjoiZDgxYTZmZTItODhiMy00MzU0LThlOGEtYTk2YWNjMWI1Zjk5IiwidCI6ImQwYzY5OGQ0LWU0ZWEtNGVlOS1hNzlkLWYyZDdhNzgzOTljOCJ9";
+}
+</script>
+
+</body>
+</html>
 </style>
 </head>
 
