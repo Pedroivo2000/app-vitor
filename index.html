@@ -18,45 +18,95 @@ html,body{height:100%}
 body{overflow:hidden;font-family:Arial,sans-serif;background:#0B1F3B}
 
 /* Capa */
-.capa{position:fixed;inset:0;width:100vw;height:100vh;object-fit:cover;z-index:1}
+.capa{
+  position:fixed;
+  inset:0;
+  width:100vw;
+  height:100vh;
+  object-fit:cover;
+  z-index:1
+}
 
 /* Botão */
 .botao-container{
-  position:fixed;left:0;right:0;bottom:50px;
-  display:flex;justify-content:center;padding:0 16px;z-index:2
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:50px;
+  display:flex;
+  justify-content:center;
+  padding:0 16px;
+  z-index:2
 }
+
 button{
-  width:min(400px,92vw);padding:20px;font-size:22px;font-weight:700;
-  background:#FF7A00;color:#fff;border:0;border-radius:16px;cursor:pointer;
+  width:min(400px,92vw);
+  padding:20px;
+  font-size:22px;
+  font-weight:700;
+  background:#FF7A00;
+  color:#fff;
+  border:0;
+  border-radius:16px;
+  cursor:pointer;
   box-shadow:0 8px 20px rgba(0,0,0,.3)
 }
-button:active{transform:scale(.97)}
+
+button:active{
+  transform:scale(.97)
+}
 
 /* Iframe */
 #biFrame{
-  position:fixed;inset:0;width:100vw;height:100vh;border:none;
-  display:none;z-index:3;background:#0B1F3B;
+  position:fixed;
+  inset:0;
+  width:100vw;
+  height:100vh;
+  border:none;
+  display:none;
+  z-index:3;
+  background:#0B1F3B
 }
 
-/* Loading overlay (por cima do iframe) */
+/* Loading */
 #loading{
-  position:fixed;inset:0;display:none;z-index:4;
+  position:fixed;
+  inset:0;
+  display:none;
+  z-index:4;
   background:#0B1F3B;
-  align-items:center;justify-content:center;flex-direction:column;
-  gap:16px;text-align:center;padding:24px;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:16px;
+  text-align:center;
+  padding:24px;
 }
-#loading img{width:120px;height:120px;border-radius:24px}
-#loading .txt{color:#fff;font-size:18px;font-weight:700;letter-spacing:.2px}
-#loading .sub{color:rgba(255,255,255,.75);font-size:14px}
 
-/* Spinner simples */
+#loading img{
+  width:120px;
+  height:120px;
+  border-radius:24px
+}
+
+#loading .txt{
+  color:#fff;
+  font-size:18px;
+  font-weight:700
+}
+
 .spinner{
-  width:34px;height:34px;border-radius:999px;
+  width:34px;
+  height:34px;
+  border-radius:999px;
   border:4px solid rgba(255,255,255,.25);
   border-top-color:#FF7A00;
-  animation:spin 1s linear infinite;
+  animation:spin 1s linear infinite
 }
-@keyframes spin{to{transform:rotate(360deg)}}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
 </style>
 </head>
 
@@ -70,33 +120,28 @@ button:active{transform:scale(.97)}
 
 <iframe id="biFrame" allowfullscreen></iframe>
 
-<!-- Loading -->
 <div id="loading">
   <img src="icone.png" alt="Vitor Freitas">
-  <div class="txt">Carregando seus treinos…</div>
-  <div class="sub">Aguarde alguns segundos</div>
+  <div class="txt">Carregando seus treinos...</div>
   <div class="spinner"></div>
 </div>
 
 <script>
 function acessar() {
-  const url =
-    "https://app.powerbi.com/view?r=eyJrIjoiZDgxYTZmZTItODhiMy00MzU0LThlOGEtYTk2YWNjMWI1Zjk5IiwidCI6ImQwYzY5OGQ0LWU0ZWEtNGVlOS1hNzlkLWYyZDdhNzgzOTljOCJ9&chromeless=true";
 
-  // Esconde capa/botão
+  const url =
+  "https://app.powerbi.com/view?r=eyJrIjoiZDgxYTZmZTItODhiMy00MzU0LThlOGEtYTk2YWNjMWI1Zjk5IiwidCI6ImQwYzY5OGQ0LWU0ZWEtNGVlOS1hNzlkLWYyZDdhNzgzOTljOCJ9&chromeless=true";
+
   document.querySelector(".capa").style.display = "none";
   document.getElementById("btnBox").style.display = "none";
 
-  // Mostra loading
   const loading = document.getElementById("loading");
   loading.style.display = "flex";
 
-  // Abre iframe
   const frame = document.getElementById("biFrame");
   frame.style.display = "block";
   frame.src = url;
 
-  // Quando carregar, esconde loading (com um pequeno delay)
   frame.onload = () => {
     setTimeout(() => {
       loading.style.display = "none";
