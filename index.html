@@ -1,74 +1,81 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>App Vitor Freitas</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Favicon / iPhone icon -->
-  <link rel="icon" type="image/png" sizes="512x512" href="icone.png" />
-  <link rel="apple-touch-icon" sizes="512x512" href="icone.png" />
-  <meta name="theme-color" content="#0B1F3B" />
+<title>Vitor Freitas</title>
+<meta name="apple-mobile-web-app-title" content="Vitor Freitas">
+<meta name="theme-color" content="#0B1F3B">
 
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-    }
+<link rel="manifest" href="/manifest.webmanifest">
 
-    body {
-      font-family: Arial, sans-serif;
-      overflow: hidden; /* impede rolagem */
-      background: #0B1F3B;
-    }
+<!-- Favicon -->
+<link rel="icon" type="image/png" sizes="512x512" href="icone.png">
+<link rel="apple-touch-icon" sizes="512x512" href="icone.png">
 
-    /* capa em tela cheia */
-    .screen {
-      height: 100vh;
-      width: 100vw;
-      background-image: url("capa.png");
-      background-size: cover;     /* preenche tudo */
-      background-position: center;/* centraliza */
-      background-repeat: no-repeat;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      padding: 0 16px 56px; /* espaço do botão embaixo */
-      box-sizing: border-box;
-    }
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-    /* botão flutuante */
-    .btn {
-      width: min(420px, 92vw);
-      padding: 18px 22px;
-      font-size: 20px;
-      font-weight: bold;
-      background: #FF7A00;
-      color: #fff;
-      border: none;
-      border-radius: 18px;
-      cursor: pointer;
-      box-shadow: 0 10px 28px rgba(0,0,0,0.35);
-    }
+body {
+    height: 100vh;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    background-color: #0B1F3B;
+}
 
-    .btn:active {
-      transform: scale(0.98);
-    }
-  </style>
+.capa {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.botao-container {
+    position: absolute;
+    bottom: 40px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+button {
+    width: 85%;
+    max-width: 400px;
+    padding: 20px;
+    font-size: 22px;
+    font-weight: bold;
+    background-color: #FF7A00;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+button:active {
+    transform: scale(0.97);
+}
+</style>
 </head>
 
 <body>
-  <div class="screen">
-    <button class="btn" onclick="acessar()">Acessar</button>
-  </div>
 
-  <script>
-    function acessar() {
-      window.location.href = "https://app.powerbi.com/view?r=eyJrIjoiZDgxYTZmZTItODhiMy00MzU0LThlOGEtYTk2YWNjMWI1Zjk5IiwidCI6ImQwYzY5OGQ0LWU0ZWEtNGVlOS1hNzlkLWYyZDdhNzgzOTljOCJ9";
-    }
-  </script>
-</body>
-</html>
+<img src="capa.png" class="capa" alt="Vitor Freitas">
+
+<div class="botao-container">
+    <button onclick="acessar()">Acessar</button>
+</div>
+
+<script>
+function acessar() {
+    window.location.href = "https://app.powerbi.com/view?r=eyJrIjoiZDgxYTZmZTItODhiMy00MzU0LThlOGEtYTk2YWNjMWI1Zjk5IiwidCI6ImQwYzY5OGQ0LWU0ZWEtNGVlOS1hNzlkLWYyZDdhNzgzOTljOCJ9";
+}
+</script>
 
 </body>
 </html>
