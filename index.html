@@ -2,11 +2,14 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
 
 <title>Vitor Freitas</title>
+
 <meta name="apple-mobile-web-app-title" content="Vitor Freitas">
 <meta name="theme-color" content="#0B1F3B">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="512x512" href="icone.png">
@@ -14,8 +17,14 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%}
-body{overflow:hidden;font-family:Arial,sans-serif;background:#0B1F3B}
+
+html,body{
+  height:100%;
+  width:100%;
+  overflow:hidden;
+  background:#0B1F3B;
+  font-family:Arial,sans-serif
+}
 
 /* Capa */
 .capa{
@@ -32,7 +41,7 @@ body{overflow:hidden;font-family:Arial,sans-serif;background:#0B1F3B}
   position:fixed;
   left:0;
   right:0;
-  bottom:50px;
+  bottom:calc(env(safe-area-inset-bottom) + 40px);
   display:flex;
   justify-content:center;
   padding:0 16px;
@@ -130,7 +139,7 @@ button:active{
 function acessar() {
 
   const url =
-  "https://app.powerbi.com/view?r=eyJrIjoiZDgxYTZmZTItODhiMy00MzU0LThlOGEtYTk2YWNjMWI1Zjk5IiwidCI6ImQwYzY5OGQ0LWU0ZWEtNGVlOS1hNzlkLWYyZDdhNzgzOTljOCJ9&chromeless=true";
+  "https://app.powerbi.com/view?r=eyJrIjoiZDgxYTZmZTItODhiMy00MzU0LThlOGEtYTk2YWNjMWI1Zjk5IiwidCI6ImQwYzY5OGQ0LWU0ZWEtNGVlOS1hNzlkLWYyZDdhNzgzOTljOCJ9&chromeless=1";
 
   document.querySelector(".capa").style.display = "none";
   document.getElementById("btnBox").style.display = "none";
@@ -145,7 +154,7 @@ function acessar() {
   frame.onload = () => {
     setTimeout(() => {
       loading.style.display = "none";
-    }, 700);
+    }, 800);
   };
 }
 </script>
