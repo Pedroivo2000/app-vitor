@@ -7,10 +7,10 @@
 
   <style>
     :root{
-      --navy:#0B1F3B;
-      --navy2:#07182B;
+      --navy:#0B1F3B;     /* base */
+      --navy2:#07182B;    /* texto escuro */
       --ink:#0a0f18;
-      --orange:#FF8C00;
+      --orange:#FF8C00;   /* laranja */
       --orange2:#ff7a00;
       --white:#ffffff;
       --muted:rgba(255,255,255,.75);
@@ -32,6 +32,7 @@
 
     .wrap{max-width:980px;margin:0 auto;padding:18px 14px 80px}
 
+    /* Top */
     .top{
       position:sticky;top:10px;z-index:10;
       display:flex;align-items:center;justify-content:space-between;gap:12px;
@@ -75,6 +76,7 @@
     }
     .bar > div{height:100%;width:0;background:linear-gradient(90deg, var(--orange), #ffd08a)}
 
+    /* Card */
     .card{
       margin-top:14px;
       background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
@@ -159,6 +161,7 @@
     }
     .btn:disabled{opacity:.55;cursor:not-allowed}
 
+    /* Ranking / Pirâmide */
     .rankList{display:grid;gap:10px;margin-top:8px}
     .rankItem{
       display:flex;align-items:center;justify-content:space-between;gap:10px;
@@ -190,6 +193,48 @@
     }
     .miniBtn:disabled{opacity:.35;cursor:not-allowed}
 
+    /* ✅ Pirâmide visual (NOVO) */
+    .pyramid{
+      margin-top:12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      align-items:center;
+    }
+    .pyrRow{
+      width:100%;
+      display:flex;
+      justify-content:center;
+    }
+    .pyrChip{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px 12px;
+      border-radius:18px;
+      background:rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow:0 10px 24px rgba(0,0,0,.18);
+    }
+    .pyrNum{
+      width:44px;
+      height:34px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      font-weight:900;
+      background:rgba(255,140,0,.18);
+      border:1px solid rgba(255,140,0,.35);
+    }
+    .pyrName{
+      font-weight:900;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    /* Modelos */
     .models{
       display:grid;gap:10px;margin-top:10px;
       grid-template-columns:repeat(2,1fr);
@@ -221,6 +266,7 @@
       letter-spacing:.08em;
     }
 
+    /* Uploads */
     .uploads{display:grid;gap:10px;margin-top:12px}
     @media(min-width:820px){ .uploads{grid-template-columns:1fr 1fr} }
     .upCard{
@@ -234,6 +280,7 @@
     .status.ok{color:#22c55e}
     .status.err{color:#ef4444}
 
+    /* Toast */
     .toast{
       position:fixed;left:50%;bottom:16px;transform:translateX(-50%);
       background:rgba(11,31,59,.96);
@@ -297,17 +344,14 @@
 
   <div class="toast" id="toast"></div>
 
-  <!-- ✅ SUPABASE via ESM (estável na Vercel) -->
-  <script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
     // ========= SUPABASE CONFIG =========
     const PROJECT_URL = "https://kjigccxaggwtpoosihbl.supabase.co";
-    const ANON_KEY    = "sb_publishable_Rzfa6WmpntiKSlpNDDDgcw_nVcY_Xt7";
-    const BUCKET      = "anamnese-fotos";
-    const TABLE       = "anamnese_submissions";
-
-    const supabase = createClient(PROJECT_URL, ANON_KEY);
+    const ANON_KEY = "sb_publishable_Rzfa6WmpntiKSlpNDDDgcw_nVcY_Xt7";
+    const BUCKET = "anamnese-fotos";
+    const TABLE  = "anamnese_submissions";
+    const supabase = window.supabase.createClient(PROJECT_URL, ANON_KEY);
 
     // ========= UI =========
     const $ = (s)=>document.querySelector(s);
@@ -323,12 +367,12 @@
       .replaceAll('"',"&quot;").replaceAll("'","&#039;");
 
     const steps = [
-      { label:"Dados",       title:"DADOS <span>PESSOAIS</span>",           desc:"Preencha com atenção. Isso ajuda seu treinador a personalizar o programa com segurança."},
-      { label:"Objetivo",    title:"OBJETIVO <span>& ROTINA</span>",        desc:"Explique seu objetivo e possíveis limitações."},
-      { label:"Preferência", title:"PIRÂMIDE <span>DE PREFERÊNCIA</span>",  desc:"Organize os grupos musculares do mais prioritário (1º) ao menos prioritário (9º)."},
-      { label:"Saúde",       title:"SAÚDE <span>& RESTRIÇÕES</span>",       desc:"Informações para treinar com segurança."},
-      { label:"Fotos",       title:"FOTOS <span>DE AVALIAÇÃO</span>",       desc:"Veja os modelos e envie 10 fotos seguindo o padrão."},
-      { label:"Final",       title:"ENVIO <span>CONCLUÍDO</span>",          desc:"Pronto! As informações foram enviadas."}
+      { label:"Dados", title:"DADOS <span>PESSOAIS</span>", desc:"Preencha com atenção. Isso ajuda seu treinador a personalizar o programa com segurança."},
+      { label:"Objetivo", title:"OBJETIVO <span>& ROTINA</span>", desc:"Explique seu objetivo e possíveis limitações."},
+      { label:"Preferência", title:"PIRÂMIDE <span>DE PREFERÊNCIA</span>", desc:"Organize os grupos musculares do mais prioritário (1º) ao menos prioritário (9º)."},
+      { label:"Saúde", title:"SAÚDE <span>& RESTRIÇÕES</span>", desc:"Informações para treinar com segurança."},
+      { label:"Fotos", title:"FOTOS <span>DE AVALIAÇÃO</span>", desc:"Veja os modelos e envie 10 fotos seguindo o padrão."},
+      { label:"Final", title:"ENVIO <span>CONCLUÍDO</span>", desc:"Pronto! As informações foram enviadas."}
     ];
 
     const state = {
@@ -346,6 +390,51 @@
       priority:["Peitoral","Costas","Ombro","Bíceps","Tríceps","Abdômen","Quadríceps","Posterior","Glúteos"],
       uploads:Array.from({length:10}, ()=>({file:null, ok:false, err:""}))
     };
+
+    // ✅ NOVO: pirâmide visual + tabela do ranking
+    function renderPyramid(arr){
+      const maxW = 520;
+      const minW = 320;
+      const n = arr.length;
+
+      const rows = arr.map((name, i)=>{
+        const rank = i + 1;
+        const t = (n === 1) ? 0 : (i / (n - 1));
+        const w = Math.round(maxW - (maxW - minW) * t);
+
+        return `
+          <div class="pyrRow">
+            <div class="pyrChip" style="width:${w}px">
+              <div class="pyrNum">${rank}º</div>
+              <div class="pyrName">${esc(name)}</div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      return `<div class="pyramid">${rows}</div>`;
+    }
+
+    function renderRankingTable(arr){
+      const rows = arr.map((name,i)=>`
+        <tr>
+          <td>${i+1}º</td>
+          <td><b>${esc(name)}</b></td>
+        </tr>
+      `).join("");
+
+      return `
+        <div class="summary" style="margin-top:14px">
+          <table>
+            <tr>
+              <td style="color:rgba(255,255,255,.70);width:35%">Posição</td>
+              <td style="color:rgba(255,255,255,.70)">Grupo muscular</td>
+            </tr>
+            ${rows}
+          </table>
+        </div>
+      `;
+    }
 
     function renderNav(){
       const nav=$("#nav"); nav.innerHTML="";
@@ -459,6 +548,9 @@
         <div class="hint">Use as setas para ordenar do <b>mais prioritário</b> (1º) ao <b>menos prioritário</b> (9º).</div>
         <div class="rankList">${rows}</div>
 
+        <label style="margin-top:18px">Prévia da pirâmide</label>
+        ${renderPyramid(state.priority)}
+
         <div class="btnRow">
           <button class="btn" id="p3">Voltar</button>
           <button class="btn primary" id="n3">Próxima etapa</button>
@@ -505,8 +597,7 @@
         const n = String(i+1).padStart(2,"0");
         return `
           <div class="modelCard">
-            <img src="assets/fotos-modelo/${n}.jpg" alt="Modelo ${n}"
-              onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=&quot;padding:18px;color:rgba(255,255,255,.8);text-align:center&quot;>Não achou:<br><b>assets/fotos-modelo/${n}.jpg</b></div>';">
+            <img src="modelos/${n}.jpg" alt="Modelo ${n}" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=&quot;padding:18px;color:rgba(255,255,255,.8);text-align:center&quot;>Coloque<br><b>modelos/${n}.jpg</b><br>no Git</div>';">
             <div class="modelCap">
               <span>Modelo ${n}</span>
               <span class="tag">Exemplo</span>
@@ -551,6 +642,7 @@
         <div class="done">
           <h2>ENVIO CONCLUÍDO!</h2>
           <p>Perfeito! Seu treinador recebeu as informações e fotos.</p>
+
           <div class="summary">
             <table>
               <tr><td>Código</td><td><b>${esc(state.student_code)}</b></td></tr>
@@ -560,7 +652,14 @@
               <tr><td>ID do envio</td><td style="font-family:ui-monospace, Menlo, monospace">${esc(state.submissionId||"-")}</td></tr>
             </table>
           </div>
-          <div class="btnRow" style="justify-content:center">
+
+          <label style="margin-top:18px">Pirâmide de preferência</label>
+          ${renderPyramid(state.priority)}
+
+          <label style="margin-top:18px">Ranking (1º ao 9º)</label>
+          ${renderRankingTable(state.priority)}
+
+          <div class="btnRow" style="justify-content:center;margin-top:18px">
             <button class="btn primary" onclick="location.reload()">Enviar outro aluno</button>
           </div>
         </div>
@@ -651,7 +750,6 @@
 
         try{
           toast("Enviando dados...");
-
           const payload={
             student_code: state.student_code,
             full_name: state.full_name,
@@ -676,37 +774,25 @@
           state.submissionId = data.id;
 
           toast("Enviando fotos...");
-          const paths = [];
-
           for(let i=0;i<10;i++){
             const f=state.uploads[i].file;
             const n=String(i+1).padStart(2,"0");
             const ext=(f.name.split(".").pop()||"jpg").toLowerCase();
-            const safeExt = ext.replace(/[^a-z0-9]/g,"") || "jpg";
-            const path = `${state.student_code}/${state.submissionId}/${n}.${safeExt}`;
+            const path = `${state.student_code}/${state.submissionId}/${n}.${ext}`;
 
             const { error: upErr } = await supabase
               .storage.from(BUCKET)
-              .upload(path, f, { upsert:true, contentType:f.type, cacheControl:"3600" });
+              .upload(path, f, { upsert:true, contentType:f.type });
 
             if(upErr) throw upErr;
-
-            paths.push(path);
           }
-
-          const { error: up2 } = await supabase
-            .from(TABLE)
-            .update({ photo_paths: paths })
-            .eq("id", state.submissionId);
-
-          if(up2) throw up2;
 
           toast("Enviado ✅");
           next();
         }catch(err){
           console.error(err);
           alert("Erro ao enviar:\n" + (err?.message || JSON.stringify(err)));
-          toast("Falha ao enviar. Confira policy do bucket (INSERT) e RLS da tabela.");
+          toast("Falha ao enviar. Confira policy do bucket e RLS da tabela.");
         }finally{
           send.disabled=false;
           send.textContent="Enviar";
@@ -714,7 +800,6 @@
       };
     }
 
-    // 🔥 garante que roda depois que DOM existe
     render();
   </script>
 </body>
