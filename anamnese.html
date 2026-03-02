@@ -7,10 +7,10 @@
 
   <style>
     :root{
-      --navy:#0B1F3B;     /* base */
-      --navy2:#07182B;    /* texto escuro */
+      --navy:#0B1F3B;
+      --navy2:#07182B;
       --ink:#0a0f18;
-      --orange:#FF8C00;   /* laranja */
+      --orange:#FF8C00;
       --orange2:#ff7a00;
       --white:#ffffff;
       --muted:rgba(255,255,255,.75);
@@ -32,7 +32,6 @@
 
     .wrap{max-width:980px;margin:0 auto;padding:18px 14px 80px}
 
-    /* Top */
     .top{
       position:sticky;top:10px;z-index:10;
       display:flex;align-items:center;justify-content:space-between;gap:12px;
@@ -76,7 +75,6 @@
     }
     .bar > div{height:100%;width:0;background:linear-gradient(90deg, var(--orange), #ffd08a)}
 
-    /* Card */
     .card{
       margin-top:14px;
       background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
@@ -161,7 +159,6 @@
     }
     .btn:disabled{opacity:.55;cursor:not-allowed}
 
-    /* Ranking / Pirâmide */
     .rankList{display:grid;gap:10px;margin-top:8px}
     .rankItem{
       display:flex;align-items:center;justify-content:space-between;gap:10px;
@@ -193,7 +190,6 @@
     }
     .miniBtn:disabled{opacity:.35;cursor:not-allowed}
 
-    /* Modelos */
     .models{
       display:grid;gap:10px;margin-top:10px;
       grid-template-columns:repeat(2,1fr);
@@ -225,7 +221,6 @@
       letter-spacing:.08em;
     }
 
-    /* Uploads */
     .uploads{display:grid;gap:10px;margin-top:12px}
     @media(min-width:820px){ .uploads{grid-template-columns:1fr 1fr} }
     .upCard{
@@ -239,7 +234,6 @@
     .status.ok{color:#22c55e}
     .status.err{color:#ef4444}
 
-    /* Toast */
     .toast{
       position:fixed;left:50%;bottom:16px;transform:translateX(-50%);
       background:rgba(11,31,59,.96);
@@ -303,14 +297,14 @@
 
   <div class="toast" id="toast"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- ✅ Usa seu client local -->
+  <script src="./js/supabase.js"></script>
+
   <script>
-    // ========= SUPABASE CONFIG =========
-    const PROJECT_URL = "https://kjigccxaggwtpoosihbl.supabase.co";
-    const ANON_KEY = "sb_publishable_Rzfa6WmpntiKSlpNDDDgcw_nVcY_Xt7";
+    // ========= SUPABASE (vem do js/supabase.js) =========
+    const supabase = window.supabaseClient;  // ✅
     const BUCKET = "anamnese-fotos";
     const TABLE  = "anamnese_submissions";
-    const supabase = window.supabase.createClient(PROJECT_URL, ANON_KEY);
 
     // ========= UI =========
     const $ = (s)=>document.querySelector(s);
@@ -641,18 +635,33 @@
 
       const p5=$("#p5"); if(p5) p5.onclick=prev;
 
+      // ✅ ENVIO (insert -> upload -> update photo_paths)
       const send=$("#send");
       if(send) send.onclick=async ()=>{
+        // exigir código (mais forte)
+        if(!state.student_code){
+          toast("O CÓDIGO do aluno é obrigatório.");
+          go(0);
+          return;
+        }
+
         const count=state.uploads.filter(x=>x.file).length;
         if(count<10){
           toast(`Selecione as 10 fotos. Atualmente: ${count}/10`);
           return;
         }
+
+        if(!supabase){
+          alert("Supabase não carregou. Verifique o arquivo ./js/supabase.js");
+          return;
+        }
+
         send.disabled=true;
         send.textContent="ENVIANDO...";
 
         try{
-          toast("Enviando dados...");
+          toast("Criando registro...");
+
           const payload={
             student_code: state.student_code,
             full_name: state.full_name,
@@ -663,7 +672,8 @@
             height_cm: state.height_cm ? Number(String(state.height_cm).replace(",", ".")) : null,
             goal: state.goal || null,
             injuries: state.injuries || null,
-            muscle_priority: state.priority
+            muscle_priority: state.priority,
+            photo_paths: [] // começa vazio
           };
 
           const { data, error } = await supabase
@@ -677,6 +687,9 @@
           state.submissionId = data.id;
 
           toast("Enviando fotos...");
+
+          const uploadedPaths = [];
+
           for(let i=0;i<10;i++){
             const f=state.uploads[i].file;
             const n=String(i+1).padStart(2,"0");
@@ -688,7 +701,18 @@
               .upload(path, f, { upsert:true, contentType:f.type });
 
             if(upErr) throw upErr;
+
+            uploadedPaths.push(path);
           }
+
+          toast("Salvando caminhos...");
+
+          const { error: updateErr } = await supabase
+            .from(TABLE)
+            .update({ photo_paths: uploadedPaths })
+            .eq("id", state.submissionId);
+
+          if(updateErr) throw updateErr;
 
           toast("Enviado ✅");
           next();
