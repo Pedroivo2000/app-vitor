@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Anamnese • Vitor Freitas</title>
+
+  <style>
+    :root{
+      --navy:#0B1F3B;     /* base */
+      --navy2:#07182B;    /* texto escuro */
+      --ink:#0a0f18;
+      --orange:#FF8C00;   /* laranja */
+      --orange2:#ff7a00;
+      --white:#ffffff;
+      --muted:rgba(255,255,255,.75);
+      --card:rgba(255,255,255,.06);
+      --stroke:rgba(255,255,255,.12);
+      --shadow:0 14px 35px rgba(0,0,0,.35);
+      --radius:22px;
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      font-family: Arial, sans-serif;
+      background: radial-gradient(900px 500px at 50% -30%, rgba(255,140,0,.25), transparent 65%),
+                  linear-gradient(180deg, #07152a, #050b14);
+      color:var(--white);
+      overflow-x:hidden;
+    }
+
+    .wrap{max-width:980px;margin:0 auto;padding:18px 14px 80px}
+
+    /* Top */
+    .top{
+      position:sticky;top:10px;z-index:10;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:14px 14px;
+      background:linear-gradient(180deg, rgba(11,31,59,.96), rgba(7,24,43,.92));
+      border:1px solid var(--stroke);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
+    .logo{
+      width:38px;height:38px;border-radius:999px;
+      display:grid;place-items:center;
+      border:2px solid rgba(255,140,0,.85);
+      background:rgba(0,0,0,.15);
+      font-weight:900;letter-spacing:.5px;
+    }
+    .brandTxt{min-width:0}
+    .brandTxt .t1{
+      font-size:14px;font-weight:900;letter-spacing:.18em;
+      text-transform:uppercase;color:var(--orange);
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    }
+    .brandTxt .t2{
+      margin-top:4px;font-size:12px;color:var(--muted);
+      letter-spacing:.12em;text-transform:uppercase;
+    }
+    .stepChip{
+      font-size:12px;font-weight:900;
+      letter-spacing:.14em;text-transform:uppercase;
+      color:rgba(255,255,255,.9);
+      background:rgba(255,140,0,.14);
+      border:1px solid rgba(255,140,0,.28);
+      padding:8px 10px;border-radius:999px;
+      white-space:nowrap;
+    }
+    .bar{
+      height:4px;border-radius:999px;background:rgba(255,255,255,.12);
+      overflow:hidden;margin-top:10px
+    }
+    .bar > div{height:100%;width:0;background:linear-gradient(90deg, var(--orange), #ffd08a)}
+
+    /* Card */
+    .card{
+      margin-top:14px;
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--stroke);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .head{
+      padding:22px 18px 16px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .head h1{
+      font-size:42px;line-height:1.02;letter-spacing:.02em;
+    }
+    .head h1 span{color:var(--orange)}
+    .head p{
+      margin-top:10px;color:var(--muted);line-height:1.45;font-size:14px;
+      max-width:60ch;
+    }
+
+    .nav{
+      display:flex;gap:10px;flex-wrap:wrap;margin-top:14px
+    }
+    .pill{
+      font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+      padding:8px 10px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.06);
+      color:rgba(255,255,255,.88);
+      cursor:pointer;user-select:none;
+    }
+    .pill.active{
+      border-color:rgba(255,140,0,.45);
+      background:rgba(255,140,0,.16);
+      color:#fff;
+      font-weight:900;
+    }
+
+    .body{padding:18px}
+
+    label{
+      display:block;
+      font-size:12px;font-weight:900;
+      letter-spacing:.14em;text-transform:uppercase;
+      color:rgba(255,255,255,.82);
+      margin-top:14px;
+    }
+    input,select,textarea{
+      width:100%;
+      margin-top:8px;
+      padding:14px 14px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.18);
+      color:#fff;
+      outline:none;
+    }
+    textarea{min-height:92px;resize:vertical}
+    .hint{margin-top:8px;color:rgba(255,255,255,.70);font-size:12px;line-height:1.4}
+
+    .grid{display:grid;gap:14px}
+    @media(min-width:820px){
+      .grid.cols2{grid-template-columns:1fr 1fr}
+    }
+
+    .btnRow{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+    .btn{
+      border:0;cursor:pointer;
+      padding:16px 18px;border-radius:18px;
+      font-weight:900;letter-spacing:.06em;
+      text-transform:uppercase;
+      background:rgba(255,255,255,.08);
+      color:#fff;
+      border:1px solid rgba(255,255,255,.14);
+    }
+    .btn.primary{
+      background:linear-gradient(180deg, #ff9a1a, #ff7a00);
+      color:#0b0f14;
+      border:1px solid rgba(255,140,0,.45);
+      box-shadow:0 10px 22px rgba(255,140,0,.20);
+    }
+    .btn:disabled{opacity:.55;cursor:not-allowed}
+
+    /* Ranking / Pirâmide */
+    .rankList{display:grid;gap:10px;margin-top:8px}
+    .rankItem{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:12px 12px;
+      border-radius:18px;
+      background:rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .rankLeft{display:flex;align-items:center;gap:10px;min-width:0}
+    .rankNum{
+      width:40px;height:40px;border-radius:16px;
+      display:grid;place-items:center;
+      background:rgba(255,140,0,.18);
+      border:1px solid rgba(255,140,0,.35);
+      font-weight:900;
+    }
+    .rankName{
+      font-weight:900;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    }
+    .rankBtns{display:flex;gap:8px}
+    .miniBtn{
+      padding:10px 12px;border-radius:14px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      color:#fff;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .miniBtn:disabled{opacity:.35;cursor:not-allowed}
+
+    /* Modelos */
+    .models{
+      display:grid;gap:10px;margin-top:10px;
+      grid-template-columns:repeat(2,1fr);
+    }
+    @media(min-width:820px){ .models{grid-template-columns:repeat(5,1fr)} }
+    .modelCard{
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.18);
+      box-shadow:0 10px 24px rgba(0,0,0,.25);
+    }
+    .modelCard img{
+      width:100%;height:140px;object-fit:cover;display:block;
+    }
+    .modelCap{
+      padding:10px 10px;
+      font-size:12px;font-weight:900;
+      letter-spacing:.12em;text-transform:uppercase;
+      color:rgba(255,255,255,.9);
+      display:flex;justify-content:space-between;align-items:center;
+    }
+    .tag{
+      font-size:11px;font-weight:900;
+      padding:6px 10px;border-radius:999px;
+      background:rgba(255,140,0,.18);
+      border:1px solid rgba(255,140,0,.28);
+      color:#fff;
+      letter-spacing:.08em;
+    }
+
+    /* Uploads */
+    .uploads{display:grid;gap:10px;margin-top:12px}
+    @media(min-width:820px){ .uploads{grid-template-columns:1fr 1fr} }
+    .upCard{
+      border-radius:18px;
+      padding:12px;
+      background:rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .upHead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .status{font-size:12px;color:rgba(255,255,255,.70);font-weight:900}
+    .status.ok{color:#22c55e}
+    .status.err{color:#ef4444}
+
+    /* Toast */
+    .toast{
+      position:fixed;left:50%;bottom:16px;transform:translateX(-50%);
+      background:rgba(11,31,59,.96);
+      border:1px solid rgba(255,255,255,.14);
+      padding:12px 14px;border-radius:16px;
+      box-shadow:var(--shadow);
+      display:none;max-width:min(720px, calc(100vw - 22px));
+      font-size:13px;color:#fff;
+    }
+    .toast.show{display:block}
+
+    .done{
+      text-align:center;padding:26px 16px 28px;
+    }
+    .done h2{
+      font-size:44px;letter-spacing:.04em;
+      color:var(--orange);
+      margin-bottom:10px;
+    }
+    .done p{color:var(--muted);line-height:1.5}
+    .summary{
+      margin:18px auto 0;
+      max-width:720px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:18px;
+      background:rgba(0,0,0,.18);
+      overflow:auto;
+    }
+    .summary table{width:100%;border-collapse:collapse;font-size:13px}
+    .summary td{padding:12px 10px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .summary td:first-child{color:rgba(255,255,255,.70);width:35%}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <div class="top">
+      <div class="brand">
+        <div class="logo">VF</div>
+        <div class="brandTxt" style="min-width:0">
+          <div class="t1">VITOR FREITAS</div>
+          <div class="bar"><div id="bar"></div></div>
+          <div class="t2" id="sub">Anamnese do aluno</div>
+        </div>
+      </div>
+      <div class="stepChip" id="chip">ETAPA 1 DE 6</div>
+    </div>
+
+    <div class="card">
+      <div class="head">
+        <h1 id="title">DADOS <span>PESSOAIS</span></h1>
+        <p id="desc">Preencha com atenção. Isso ajuda seu treinador a personalizar o programa com segurança.</p>
+        <div class="nav" id="nav"></div>
+      </div>
+
+      <div class="body" id="content"></div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // ========= SUPABASE CONFIG =========
+    const PROJECT_URL = "https://kjigccxaggwtpoosihbl.supabase.co";
+    const ANON_KEY = "sb_publishable_Rzfa6WmpntiKSlpNDDDgcw_nVcY_Xt7";
+    const BUCKET = "anamnese-fotos";
+    const TABLE  = "anamnese_submissions";
+    const supabase = window.supabase.createClient(PROJECT_URL, ANON_KEY);
+
+    // ========= UI =========
+    const $ = (s)=>document.querySelector(s);
+    const toast = (msg)=>{
+      const t=$("#toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      clearTimeout(window.__tto);
+      window.__tto=setTimeout(()=>t.classList.remove("show"), 3200);
+    };
+    const esc = (v)=> (v??"").toString()
+      .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+
+    const steps = [
+      { label:"Dados", title:"DADOS <span>PESSOAIS</span>", desc:"Preencha com atenção. Isso ajuda seu treinador a personalizar o programa com segurança."},
+      { label:"Objetivo", title:"OBJETIVO <span>& ROTINA</span>", desc:"Explique seu objetivo e possíveis limitações."},
+      { label:"Preferência", title:"PIRÂMIDE <span>DE PREFERÊNCIA</span>", desc:"Organize os grupos musculares do mais prioritário (1º) ao menos prioritário (9º)."},
+      { label:"Saúde", title:"SAÚDE <span>& RESTRIÇÕES</span>", desc:"Informações para treinar com segurança."},
+      { label:"Fotos", title:"FOTOS <span>DE AVALIAÇÃO</span>", desc:"Veja os modelos e envie 10 fotos seguindo o padrão."},
+      { label:"Final", title:"ENVIO <span>CONCLUÍDO</span>", desc:"Pronto! As informações foram enviadas."}
+    ];
+
+    const state = {
+      step:0,
+      submissionId:null,
+      student_code:"",
+      full_name:"",
+      phone:"",
+      birth_date:"",
+      sex:"",
+      weight_kg:"",
+      height_cm:"",
+      goal:"",
+      injuries:"",
+      priority:["Peitoral","Costas","Ombro","Bíceps","Tríceps","Abdômen","Quadríceps","Posterior","Glúteos"],
+      uploads:Array.from({length:10}, ()=>({file:null, ok:false, err:""}))
+    };
+
+    function renderNav(){
+      const nav=$("#nav"); nav.innerHTML="";
+      steps.forEach((s,i)=>{
+        const el=document.createElement("div");
+        el.className="pill"+(i===state.step?" active":"");
+        el.textContent=s.label;
+        el.onclick=()=>go(i);
+        nav.appendChild(el);
+      });
+    }
+    function header(){
+      $("#title").innerHTML=steps[state.step].title;
+      $("#desc").textContent=steps[state.step].desc;
+      $("#chip").textContent=`ETAPA ${state.step+1} DE ${steps.length}`;
+      $("#bar").style.width = `${Math.round(((state.step+1)/steps.length)*100)}%`;
+      document.querySelectorAll(".pill").forEach((p,i)=>p.classList.toggle("active", i===state.step));
+    }
+    function go(i){ state.step=Math.max(0, Math.min(steps.length-1, i)); render(); }
+    function next(){ go(state.step+1); }
+    function prev(){ go(state.step-1); }
+
+    function step1(){
+      return `
+        <div class="grid cols2">
+          <div>
+            <label>Código do aluno *</label>
+            <input id="student_code" placeholder="Ex: VF-001" value="${esc(state.student_code)}"/>
+            <div class="hint">Use exatamente o código informado pelo seu treinador.</div>
+          </div>
+          <div>
+            <label>Nome completo *</label>
+            <input id="full_name" placeholder="Seu nome completo" value="${esc(state.full_name)}"/>
+          </div>
+          <div>
+            <label>Data de nascimento</label>
+            <input id="birth_date" type="date" value="${esc(state.birth_date)}"/>
+          </div>
+          <div>
+            <label>Sexo</label>
+            <select id="sex">
+              <option value="" ${state.sex===""?"selected":""}>Selecione...</option>
+              <option value="Feminino" ${state.sex==="Feminino"?"selected":""}>Feminino</option>
+              <option value="Masculino" ${state.sex==="Masculino"?"selected":""}>Masculino</option>
+              <option value="Outro" ${state.sex==="Outro"?"selected":""}>Outro</option>
+              <option value="Prefiro não informar" ${state.sex==="Prefiro não informar"?"selected":""}>Prefiro não informar</option>
+            </select>
+          </div>
+          <div>
+            <label>Peso (kg)</label>
+            <input id="weight_kg" inputmode="decimal" placeholder="Ex: 75" value="${esc(state.weight_kg)}"/>
+          </div>
+          <div>
+            <label>Altura (cm)</label>
+            <input id="height_cm" inputmode="numeric" placeholder="Ex: 175" value="${esc(state.height_cm)}"/>
+          </div>
+          <div style="grid-column:1/-1">
+            <label>Telefone / WhatsApp</label>
+            <input id="phone" placeholder="(11) 99999-9999" value="${esc(state.phone)}"/>
+          </div>
+        </div>
+
+        <div class="btnRow">
+          <button class="btn primary" id="n1">Próxima etapa</button>
+        </div>
+      `;
+    }
+
+    function step2(){
+      return `
+        <div class="grid cols2">
+          <div style="grid-column:1/-1">
+            <label>Objetivo principal</label>
+            <select id="goal">
+              <option value="" ${state.goal===""?"selected":""}>Selecione...</option>
+              <option value="Emagrecimento" ${state.goal==="Emagrecimento"?"selected":""}>Emagrecimento</option>
+              <option value="Ganho de massa" ${state.goal==="Ganho de massa"?"selected":""}>Ganho de massa</option>
+              <option value="Condicionamento" ${state.goal==="Condicionamento"?"selected":""}>Condicionamento</option>
+              <option value="Performance" ${state.goal==="Performance"?"selected":""}>Performance</option>
+              <option value="Saúde" ${state.goal==="Saúde"?"selected":""}>Saúde</option>
+            </select>
+          </div>
+          <div style="grid-column:1/-1">
+            <label>Lesão / Restrição médica?</label>
+            <textarea id="injuries" placeholder="Ex: dor no joelho, hérnia, etc.">${esc(state.injuries)}</textarea>
+          </div>
+        </div>
+
+        <div class="btnRow">
+          <button class="btn" id="p2">Voltar</button>
+          <button class="btn primary" id="n2">Próxima etapa</button>
+        </div>
+      `;
+    }
+
+    function step3(){
+      const rows = state.priority.map((name, i)=>`
+        <div class="rankItem">
+          <div class="rankLeft">
+            <div class="rankNum">${i+1}º</div>
+            <div class="rankName">${esc(name)}</div>
+          </div>
+          <div class="rankBtns">
+            <button class="miniBtn" data-m="up" data-i="${i}" ${i===0?"disabled":""}>↑</button>
+            <button class="miniBtn" data-m="down" data-i="${i}" ${i===state.priority.length-1?"disabled":""}>↓</button>
+          </div>
+        </div>
+      `).join("");
+
+      return `
+        <div class="hint">Use as setas para ordenar do <b>mais prioritário</b> (1º) ao <b>menos prioritário</b> (9º).</div>
+        <div class="rankList">${rows}</div>
+
+        <div class="btnRow">
+          <button class="btn" id="p3">Voltar</button>
+          <button class="btn primary" id="n3">Próxima etapa</button>
+        </div>
+      `;
+    }
+
+    function step4(){
+      return `
+        <div class="grid cols2">
+          <div style="grid-column:1/-1">
+            <label>Sente dor ao treinar?</label>
+            <select id="q_pain">
+              <option value="">Selecione...</option>
+              <option value="Não">Não</option>
+              <option value="Às vezes">Às vezes</option>
+              <option value="Frequentemente">Frequentemente</option>
+            </select>
+          </div>
+          <div style="grid-column:1/-1">
+            <label>Como está seu sono?</label>
+            <select id="q_sleep">
+              <option value="">Selecione...</option>
+              <option value="Bom">Bom</option>
+              <option value="Regular">Regular</option>
+              <option value="Ruim">Ruim</option>
+            </select>
+          </div>
+          <div style="grid-column:1/-1">
+            <label>Observações adicionais</label>
+            <textarea id="q_notes" placeholder="Digite aqui..."></textarea>
+          </div>
+        </div>
+
+        <div class="btnRow">
+          <button class="btn" id="p4">Voltar</button>
+          <button class="btn primary" id="n4">Próxima etapa</button>
+        </div>
+      `;
+    }
+
+    function step5(){
+      const modelos = Array.from({length:10}, (_,i)=>{
+        const n = String(i+1).padStart(2,"0");
+        return `
+          <div class="modelCard">
+            <img src="modelos/${n}.jpg" alt="Modelo ${n}" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=&quot;padding:18px;color:rgba(255,255,255,.8);text-align:center&quot;>Coloque<br><b>modelos/${n}.jpg</b><br>no Git</div>';">
+            <div class="modelCap">
+              <span>Modelo ${n}</span>
+              <span class="tag">Exemplo</span>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      const ups = state.uploads.map((u,i)=>{
+        const n=String(i+1).padStart(2,"0");
+        return `
+          <div class="upCard">
+            <div class="upHead">
+              <div class="tag">Foto ${n}</div>
+              <div class="status ${u.ok?"ok":(u.err?"err":"")}">
+                ${u.ok?"Selecionada ✅":(u.err?("Erro: "+esc(u.err)):"Selecione uma imagem")}
+              </div>
+            </div>
+            <input type="file" accept="image/*" capture="environment" data-up="${i}" style="margin-top:10px" />
+            <div class="hint">Boa iluminação + câmera estável.</div>
+          </div>
+        `;
+      }).join("");
+
+      return `
+        <label>10 Fotos modelo (exemplo)</label>
+        <div class="models">${modelos}</div>
+
+        <label style="margin-top:18px">Envio das 10 fotos do aluno</label>
+        <div class="hint">🔧 Para melhor visualização, utilize o botão de expandir (⤢) localizado na parte inferior do sistema.</div>
+        <div class="uploads">${ups}</div>
+
+        <div class="btnRow">
+          <button class="btn" id="p5">Voltar</button>
+          <button class="btn primary" id="send">Enviar</button>
+        </div>
+      `;
+    }
+
+    function step6(){
+      return `
+        <div class="done">
+          <h2>ENVIO CONCLUÍDO!</h2>
+          <p>Perfeito! Seu treinador recebeu as informações e fotos.</p>
+          <div class="summary">
+            <table>
+              <tr><td>Código</td><td><b>${esc(state.student_code)}</b></td></tr>
+              <tr><td>Nome</td><td>${esc(state.full_name)}</td></tr>
+              <tr><td>Objetivo</td><td>${esc(state.goal||"-")}</td></tr>
+              <tr><td>Uploads</td><td>${state.uploads.filter(x=>x.ok).length}/10</td></tr>
+              <tr><td>ID do envio</td><td style="font-family:ui-monospace, Menlo, monospace">${esc(state.submissionId||"-")}</td></tr>
+            </table>
+          </div>
+          <div class="btnRow" style="justify-content:center">
+            <button class="btn primary" onclick="location.reload()">Enviar outro aluno</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function render(){
+      renderNav(); header();
+      const c=$("#content");
+      c.innerHTML = [step1,step2,step3,step4,step5,step6][state.step]();
+      bind();
+    }
+
+    function bind(){
+      // step 1
+      const sc=$("#student_code"); if(sc) sc.oninput=e=>state.student_code=e.target.value.trim().toUpperCase();
+      const fn=$("#full_name"); if(fn) fn.oninput=e=>state.full_name=e.target.value;
+      const ph=$("#phone"); if(ph) ph.oninput=e=>state.phone=e.target.value;
+      const bd=$("#birth_date"); if(bd) bd.oninput=e=>state.birth_date=e.target.value;
+      const sx=$("#sex"); if(sx) sx.onchange=e=>state.sex=e.target.value;
+      const wk=$("#weight_kg"); if(wk) wk.oninput=e=>state.weight_kg=e.target.value;
+      const hc=$("#height_cm"); if(hc) hc.oninput=e=>state.height_cm=e.target.value;
+
+      const n1=$("#n1"); if(n1) n1.onclick=()=>{
+        if(!state.student_code || !state.full_name){
+          toast("Preencha o CÓDIGO do aluno e o NOME completo.");
+          return;
+        }
+        next();
+      };
+
+      // step 2
+      const goal=$("#goal"); if(goal) goal.onchange=e=>state.goal=e.target.value;
+      const inj=$("#injuries"); if(inj) inj.oninput=e=>state.injuries=e.target.value;
+      const p2=$("#p2"); if(p2) p2.onclick=prev;
+      const n2=$("#n2"); if(n2) n2.onclick=next;
+
+      // step 3 ranking
+      document.querySelectorAll("[data-m]").forEach(btn=>{
+        btn.onclick=()=>{
+          const dir=btn.getAttribute("data-m");
+          const i=Number(btn.getAttribute("data-i"));
+          const j=dir==="up"?i-1:i+1;
+          const arr=state.priority.slice();
+          const tmp=arr[i]; arr[i]=arr[j]; arr[j]=tmp;
+          state.priority=arr;
+          render();
+        };
+      });
+      const p3=$("#p3"); if(p3) p3.onclick=prev;
+      const n3=$("#n3"); if(n3) n3.onclick=next;
+
+      // step 4
+      const p4=$("#p4"); if(p4) p4.onclick=prev;
+      const n4=$("#n4"); if(n4) n4.onclick=next;
+
+      // step 5 uploads
+      document.querySelectorAll('input[type="file"][data-up]').forEach(inp=>{
+        inp.onchange=()=>{
+          const idx=Number(inp.getAttribute("data-up"));
+          const f=inp.files?.[0];
+          if(!f) return;
+          const maxMB=10;
+          if(!f.type.startsWith("image/")){
+            state.uploads[idx]={file:null,ok:false,err:"Não é imagem"};
+            render(); return;
+          }
+          if(f.size>maxMB*1024*1024){
+            state.uploads[idx]={file:null,ok:false,err:`Máx ${maxMB}MB`};
+            render(); return;
+          }
+          state.uploads[idx]={file:f,ok:true,err:""};
+          render();
+        };
+      });
+
+      const p5=$("#p5"); if(p5) p5.onclick=prev;
+
+      const send=$("#send");
+      if(send) send.onclick=async ()=>{
+        const count=state.uploads.filter(x=>x.file).length;
+        if(count<10){
+          toast(`Selecione as 10 fotos. Atualmente: ${count}/10`);
+          return;
+        }
+        send.disabled=true;
+        send.textContent="ENVIANDO...";
+
+        try{
+          toast("Enviando dados...");
+          const payload={
+            student_code: state.student_code,
+            full_name: state.full_name,
+            phone: state.phone || null,
+            birth_date: state.birth_date || null,
+            sex: state.sex || null,
+            weight_kg: state.weight_kg ? Number(String(state.weight_kg).replace(",", ".")) : null,
+            height_cm: state.height_cm ? Number(String(state.height_cm).replace(",", ".")) : null,
+            goal: state.goal || null,
+            injuries: state.injuries || null,
+            muscle_priority: state.priority
+          };
+
+          const { data, error } = await supabase
+            .from(TABLE)
+            .insert(payload)
+            .select("id")
+            .single();
+
+          if(error) throw error;
+
+          state.submissionId = data.id;
+
+          toast("Enviando fotos...");
+          for(let i=0;i<10;i++){
+            const f=state.uploads[i].file;
+            const n=String(i+1).padStart(2,"0");
+            const ext=(f.name.split(".").pop()||"jpg").toLowerCase();
+            const path = `${state.student_code}/${state.submissionId}/${n}.${ext}`;
+
+            const { error: upErr } = await supabase
+              .storage.from(BUCKET)
+              .upload(path, f, { upsert:true, contentType:f.type });
+
+            if(upErr) throw upErr;
+          }
+
+          toast("Enviado ✅");
+          next();
+        }catch(err){
+          console.error(err);
+          alert("Erro ao enviar:\n" + (err?.message || JSON.stringify(err)));
+          toast("Falha ao enviar. Confira policy do bucket e RLS da tabela.");
+        }finally{
+          send.disabled=false;
+          send.textContent="Enviar";
+        }
+      };
+    }
+
+    render();
+  </script>
+</body>
+</html>
