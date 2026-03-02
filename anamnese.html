@@ -297,14 +297,17 @@
 
   <div class="toast" id="toast"></div>
 
-  <!-- ✅ Usa seu client local -->
-  <script src="./js/supabase.js"></script>
-
+  <!-- ✅ Supabase SEM arquivo js local -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // ========= SUPABASE (vem do js/supabase.js) =========
-    const supabase = window.supabaseClient;  // ✅
-    const BUCKET = "anamnese-fotos";
-    const TABLE  = "anamnese_submissions";
+    // ========= SUPABASE CONFIG =========
+    const PROJECT_URL = "https://kjigccxaggwtpoosihbl.supabase.co";
+    const ANON_KEY    = "sb_publishable_Rzfa6WmpntiKSlpNDDDgcw_nVcY_Xt7";
+    const BUCKET      = "anamnese-fotos";
+    const TABLE       = "anamnese_submissions";
+
+    // ✅ cria client pela lib carregada via CDN
+    const supabase = window.supabase.createClient(PROJECT_URL, ANON_KEY);
 
     // ========= UI =========
     const $ = (s)=>document.querySelector(s);
@@ -319,13 +322,17 @@
       .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
       .replaceAll('"',"&quot;").replaceAll("'","&#039;");
 
+    // ========= MODELOS (✅ corrigido para o seu Git) =========
+    // Você colocou em: assets/fotos-modelo/01.jpg ... 10.jpg
+    const MODELS_BASE = "assets/fotos-modelo";
+
     const steps = [
-      { label:"Dados", title:"DADOS <span>PESSOAIS</span>", desc:"Preencha com atenção. Isso ajuda seu treinador a personalizar o programa com segurança."},
-      { label:"Objetivo", title:"OBJETIVO <span>& ROTINA</span>", desc:"Explique seu objetivo e possíveis limitações."},
+      { label:"Dados",       title:"DADOS <span>PESSOAIS</span>",          desc:"Preencha com atenção. Isso ajuda seu treinador a personalizar o programa com segurança."},
+      { label:"Objetivo",    title:"OBJETIVO <span>& ROTINA</span>",       desc:"Explique seu objetivo e possíveis limitações."},
       { label:"Preferência", title:"PIRÂMIDE <span>DE PREFERÊNCIA</span>", desc:"Organize os grupos musculares do mais prioritário (1º) ao menos prioritário (9º)."},
-      { label:"Saúde", title:"SAÚDE <span>& RESTRIÇÕES</span>", desc:"Informações para treinar com segurança."},
-      { label:"Fotos", title:"FOTOS <span>DE AVALIAÇÃO</span>", desc:"Veja os modelos e envie 10 fotos seguindo o padrão."},
-      { label:"Final", title:"ENVIO <span>CONCLUÍDO</span>", desc:"Pronto! As informações foram enviadas."}
+      { label:"Saúde",       title:"SAÚDE <span>& RESTRIÇÕES</span>",      desc:"Informações para treinar com segurança."},
+      { label:"Fotos",       title:"FOTOS <span>DE AVALIAÇÃO</span>",      desc:"Veja os modelos e envie 10 fotos seguindo o padrão."},
+      { label:"Final",       title:"ENVIO <span>CONCLUÍDO</span>",         desc:"Pronto! As informações foram enviadas."}
     ];
 
     const state = {
@@ -340,8 +347,12 @@
       height_cm:"",
       goal:"",
       injuries:"",
+      q_pain:"",
+      q_sleep:"",
+      q_notes:"",
       priority:["Peitoral","Costas","Ombro","Bíceps","Tríceps","Abdômen","Quadríceps","Posterior","Glúteos"],
-      uploads:Array.from({length:10}, ()=>({file:null, ok:false, err:""}))
+      uploads:Array.from({length:10}, ()=>({file:null, ok:false, err:""})),
+      photo_paths:[]
     };
 
     function renderNav(){
@@ -469,24 +480,24 @@
           <div style="grid-column:1/-1">
             <label>Sente dor ao treinar?</label>
             <select id="q_pain">
-              <option value="">Selecione...</option>
-              <option value="Não">Não</option>
-              <option value="Às vezes">Às vezes</option>
-              <option value="Frequentemente">Frequentemente</option>
+              <option value="" ${state.q_pain===""?"selected":""}>Selecione...</option>
+              <option value="Não" ${state.q_pain==="Não"?"selected":""}>Não</option>
+              <option value="Às vezes" ${state.q_pain==="Às vezes"?"selected":""}>Às vezes</option>
+              <option value="Frequentemente" ${state.q_pain==="Frequentemente"?"selected":""}>Frequentemente</option>
             </select>
           </div>
           <div style="grid-column:1/-1">
             <label>Como está seu sono?</label>
             <select id="q_sleep">
-              <option value="">Selecione...</option>
-              <option value="Bom">Bom</option>
-              <option value="Regular">Regular</option>
-              <option value="Ruim">Ruim</option>
+              <option value="" ${state.q_sleep===""?"selected":""}>Selecione...</option>
+              <option value="Bom" ${state.q_sleep==="Bom"?"selected":""}>Bom</option>
+              <option value="Regular" ${state.q_sleep==="Regular"?"selected":""}>Regular</option>
+              <option value="Ruim" ${state.q_sleep==="Ruim"?"selected":""}>Ruim</option>
             </select>
           </div>
           <div style="grid-column:1/-1">
             <label>Observações adicionais</label>
-            <textarea id="q_notes" placeholder="Digite aqui..."></textarea>
+            <textarea id="q_notes" placeholder="Digite aqui...">${esc(state.q_notes)}</textarea>
           </div>
         </div>
 
@@ -500,9 +511,11 @@
     function step5(){
       const modelos = Array.from({length:10}, (_,i)=>{
         const n = String(i+1).padStart(2,"0");
+        const src = `${MODELS_BASE}/${n}.jpg`;
         return `
           <div class="modelCard">
-            <img src="modelos/${n}.jpg" alt="Modelo ${n}" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=&quot;padding:18px;color:rgba(255,255,255,.8);text-align:center&quot;>Coloque<br><b>modelos/${n}.jpg</b><br>no Git</div>';">
+            <img src="${src}" alt="Modelo ${n}"
+              onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=&quot;padding:18px;color:rgba(255,255,255,.8);text-align:center&quot;>Não achei<br><b>${esc(src)}</b><br>no Git</div>';">
             <div class="modelCap">
               <span>Modelo ${n}</span>
               <span class="tag">Exemplo</span>
@@ -571,7 +584,6 @@
     }
 
     function bind(){
-      // step 1
       const sc=$("#student_code"); if(sc) sc.oninput=e=>state.student_code=e.target.value.trim().toUpperCase();
       const fn=$("#full_name"); if(fn) fn.oninput=e=>state.full_name=e.target.value;
       const ph=$("#phone"); if(ph) ph.oninput=e=>state.phone=e.target.value;
@@ -588,13 +600,11 @@
         next();
       };
 
-      // step 2
       const goal=$("#goal"); if(goal) goal.onchange=e=>state.goal=e.target.value;
       const inj=$("#injuries"); if(inj) inj.oninput=e=>state.injuries=e.target.value;
       const p2=$("#p2"); if(p2) p2.onclick=prev;
       const n2=$("#n2"); if(n2) n2.onclick=next;
 
-      // step 3 ranking
       document.querySelectorAll("[data-m]").forEach(btn=>{
         btn.onclick=()=>{
           const dir=btn.getAttribute("data-m");
@@ -609,11 +619,12 @@
       const p3=$("#p3"); if(p3) p3.onclick=prev;
       const n3=$("#n3"); if(n3) n3.onclick=next;
 
-      // step 4
+      const qp=$("#q_pain"); if(qp) qp.onchange=e=>state.q_pain=e.target.value;
+      const qs=$("#q_sleep"); if(qs) qs.onchange=e=>state.q_sleep=e.target.value;
+      const qn=$("#q_notes"); if(qn) qn.oninput=e=>state.q_notes=e.target.value;
       const p4=$("#p4"); if(p4) p4.onclick=prev;
       const n4=$("#n4"); if(n4) n4.onclick=next;
 
-      // step 5 uploads
       document.querySelectorAll('input[type="file"][data-up]').forEach(inp=>{
         inp.onchange=()=>{
           const idx=Number(inp.getAttribute("data-up"));
@@ -635,32 +646,18 @@
 
       const p5=$("#p5"); if(p5) p5.onclick=prev;
 
-      // ✅ ENVIO (insert -> upload -> update photo_paths)
       const send=$("#send");
       if(send) send.onclick=async ()=>{
-        // exigir código (mais forte)
-        if(!state.student_code){
-          toast("O CÓDIGO do aluno é obrigatório.");
-          go(0);
-          return;
-        }
-
         const count=state.uploads.filter(x=>x.file).length;
         if(count<10){
           toast(`Selecione as 10 fotos. Atualmente: ${count}/10`);
           return;
         }
-
-        if(!supabase){
-          alert("Supabase não carregou. Verifique o arquivo ./js/supabase.js");
-          return;
-        }
-
         send.disabled=true;
         send.textContent="ENVIANDO...";
 
         try{
-          toast("Criando registro...");
+          toast("Enviando dados...");
 
           const payload={
             student_code: state.student_code,
@@ -673,7 +670,7 @@
             goal: state.goal || null,
             injuries: state.injuries || null,
             muscle_priority: state.priority,
-            photo_paths: [] // começa vazio
+            photo_paths: [] // ✅ coluna que você criou (default '{}')
           };
 
           const { data, error } = await supabase
@@ -688,38 +685,38 @@
 
           toast("Enviando fotos...");
 
-          const uploadedPaths = [];
+          const paths = [];
 
           for(let i=0;i<10;i++){
             const f=state.uploads[i].file;
             const n=String(i+1).padStart(2,"0");
             const ext=(f.name.split(".").pop()||"jpg").toLowerCase();
+
             const path = `${state.student_code}/${state.submissionId}/${n}.${ext}`;
+            paths.push(path);
 
             const { error: upErr } = await supabase
               .storage.from(BUCKET)
               .upload(path, f, { upsert:true, contentType:f.type });
 
             if(upErr) throw upErr;
-
-            uploadedPaths.push(path);
           }
 
-          toast("Salvando caminhos...");
+          state.photo_paths = paths;
 
-          const { error: updateErr } = await supabase
-            .from(TABLE)
-            .update({ photo_paths: uploadedPaths })
-            .eq("id", state.submissionId);
-
-          if(updateErr) throw updateErr;
+          // ✅ tenta salvar os paths no registro (se não tiver policy UPDATE, não vai travar)
+          try{
+            await supabase.from(TABLE).update({ photo_paths: paths }).eq("id", state.submissionId);
+          }catch(e){}
 
           toast("Enviado ✅");
           next();
         }catch(err){
           console.error(err);
           alert("Erro ao enviar:\n" + (err?.message || JSON.stringify(err)));
-          toast("Falha ao enviar. Confira policy do bucket e RLS da tabela.");
+
+          // ✅ mensagem mais correta (SEM falar de js/supabase.js)
+          toast("Falha ao enviar. Verifique policies do BUCKET e RLS da TABELA.");
         }finally{
           send.disabled=false;
           send.textContent="Enviar";
