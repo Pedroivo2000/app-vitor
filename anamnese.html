@@ -190,36 +190,6 @@
     }
     .miniBtn:disabled{opacity:.35;cursor:not-allowed}
 
-    /* Pirâmide (preview) */
-    .pyr{
-      margin-top:14px;
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:18px;
-      background:rgba(0,0,0,.18);
-      padding:12px;
-    }
-    .pyrTitle{
-      font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;
-      color:rgba(255,255,255,.85);
-      margin-bottom:10px;
-    }
-    .pyrRow{
-      display:flex;align-items:center;gap:10px;
-      padding:10px 10px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.04);
-      margin-top:8px;
-    }
-    .pyrBadge{
-      width:30px;height:30px;border-radius:12px;
-      display:grid;place-items:center;
-      background:rgba(255,140,0,.16);
-      border:1px solid rgba(255,140,0,.35);
-      font-weight:900;
-    }
-    .pyrName{font-weight:900}
-
     .models{
       display:grid;gap:10px;margin-top:10px;
       grid-template-columns:repeat(2,1fr);
@@ -272,7 +242,6 @@
       box-shadow:var(--shadow);
       display:none;max-width:min(720px, calc(100vw - 22px));
       font-size:13px;color:#fff;
-      z-index:9999;
     }
     .toast.show{display:block}
 
@@ -292,7 +261,6 @@
       border-radius:18px;
       background:rgba(0,0,0,.18);
       overflow:auto;
-      text-align:left;
     }
     .summary table{width:100%;border-collapse:collapse;font-size:13px}
     .summary td{padding:12px 10px;border-bottom:1px solid rgba(255,255,255,.08)}
@@ -329,16 +297,17 @@
 
   <div class="toast" id="toast"></div>
 
-  <!-- SUPABASE CDN (sem JS externo) -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- ✅ SUPABASE via ESM (estável na Vercel) -->
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  <script>
     // ========= SUPABASE CONFIG =========
     const PROJECT_URL = "https://kjigccxaggwtpoosihbl.supabase.co";
-    const ANON_KEY = "sb_publishable_Rzfa6WmpntiKSlpNDDDgcw_nVcY_Xt7";
-    const BUCKET = "anamnese-fotos";
-    const TABLE  = "anamnese_submissions";
-    const supabase = window.supabase.createClient(PROJECT_URL, ANON_KEY);
+    const ANON_KEY    = "sb_publishable_Rzfa6WmpntiKSlpNDDDgcw_nVcY_Xt7";
+    const BUCKET      = "anamnese-fotos";
+    const TABLE       = "anamnese_submissions";
+
+    const supabase = createClient(PROJECT_URL, ANON_KEY);
 
     // ========= UI =========
     const $ = (s)=>document.querySelector(s);
@@ -354,12 +323,12 @@
       .replaceAll('"',"&quot;").replaceAll("'","&#039;");
 
     const steps = [
-      { label:"Dados", title:"DADOS <span>PESSOAIS</span>", desc:"Preencha com atenção. Isso ajuda seu treinador a personalizar o programa com segurança."},
-      { label:"Objetivo", title:"OBJETIVO <span>& ROTINA</span>", desc:"Explique seu objetivo e possíveis limitações."},
-      { label:"Preferência", title:"PIRÂMIDE <span>DE PREFERÊNCIA</span>", desc:"Organize os grupos musculares do mais prioritário (1º) ao menos prioritário (9º)."},
-      { label:"Saúde", title:"SAÚDE <span>& RESTRIÇÕES</span>", desc:"Informações para treinar com segurança."},
-      { label:"Fotos", title:"FOTOS <span>DE AVALIAÇÃO</span>", desc:"Veja os modelos e envie 10 fotos seguindo o padrão."},
-      { label:"Final", title:"ENVIO <span>CONCLUÍDO</span>", desc:"Pronto! As informações foram enviadas."}
+      { label:"Dados",       title:"DADOS <span>PESSOAIS</span>",           desc:"Preencha com atenção. Isso ajuda seu treinador a personalizar o programa com segurança."},
+      { label:"Objetivo",    title:"OBJETIVO <span>& ROTINA</span>",        desc:"Explique seu objetivo e possíveis limitações."},
+      { label:"Preferência", title:"PIRÂMIDE <span>DE PREFERÊNCIA</span>",  desc:"Organize os grupos musculares do mais prioritário (1º) ao menos prioritário (9º)."},
+      { label:"Saúde",       title:"SAÚDE <span>& RESTRIÇÕES</span>",       desc:"Informações para treinar com segurança."},
+      { label:"Fotos",       title:"FOTOS <span>DE AVALIAÇÃO</span>",       desc:"Veja os modelos e envie 10 fotos seguindo o padrão."},
+      { label:"Final",       title:"ENVIO <span>CONCLUÍDO</span>",          desc:"Pronto! As informações foram enviadas."}
     ];
 
     const state = {
@@ -375,8 +344,7 @@
       goal:"",
       injuries:"",
       priority:["Peitoral","Costas","Ombro","Bíceps","Tríceps","Abdômen","Quadríceps","Posterior","Glúteos"],
-      uploads:Array.from({length:10}, ()=>({file:null, ok:false, err:""})),
-      photo_paths:[]
+      uploads:Array.from({length:10}, ()=>({file:null, ok:false, err:""}))
     };
 
     function renderNav(){
@@ -389,7 +357,6 @@
         nav.appendChild(el);
       });
     }
-
     function header(){
       $("#title").innerHTML=steps[state.step].title;
       $("#desc").textContent=steps[state.step].desc;
@@ -397,16 +364,9 @@
       $("#bar").style.width = `${Math.round(((state.step+1)/steps.length)*100)}%`;
       document.querySelectorAll(".pill").forEach((p,i)=>p.classList.toggle("active", i===state.step));
     }
-
     function go(i){ state.step=Math.max(0, Math.min(steps.length-1, i)); render(); }
     function next(){ go(state.step+1); }
     function prev(){ go(state.step-1); }
-
-    // ====== Validação do código (ponto 1) ======
-    // Formato exigido: VF-000 (VF- + 3 dígitos)
-    function isValidStudentCode(code){
-      return /^VF-\d{3}$/.test(code);
-    }
 
     function step1(){
       return `
@@ -414,7 +374,7 @@
           <div>
             <label>Código do aluno *</label>
             <input id="student_code" placeholder="Ex: VF-001" value="${esc(state.student_code)}"/>
-            <div class="hint">Formato exigido: <b>VF-000</b> (ex: VF-001).</div>
+            <div class="hint">Use exatamente o código informado pelo seu treinador.</div>
           </div>
           <div>
             <label>Nome completo *</label>
@@ -481,48 +441,48 @@
       `;
     }
 
-    // ====== Pirâmide (ponto 4) ======
-    function pyramidHTML(){
-      const rows = state.priority.map((name, idx)=>`
-        <div class="pyrRow">
-          <div class="pyrBadge">${idx+1}</div>
-          <div class="pyrName">${esc(name)}</div>
-        </div>
-      `).join("");
-      return `
-        <div class="pyr">
-          <div class="pyrTitle">Prévia da pirâmide (ordem final)</div>
-          ${rows}
-        </div>
-      `;
-    }
-
     function step3(){
-      const rows = state.priority.map((name, i)=>`
-        <div class="rankItem">
-          <div class="rankLeft">
-            <div class="rankNum">${i+1}º</div>
-            <div class="rankName">${esc(name)}</div>
-          </div>
-          <div class="rankBtns">
-            <button class="miniBtn" data-m="up" data-i="${i}" ${i===0?"disabled":""}>↑</button>
-            <button class="miniBtn" data-m="down" data-i="${i}" ${i===state.priority.length-1?"disabled":""}>↓</button>
-          </div>
+
+  const emojis = ["🔥","💎","🚀","💪","⚡","🏆","🎯","📈","🛡️"];
+
+  const rows = state.priority.map((name, i)=>`
+    <div class="rankItem" style="
+      background:linear-gradient(145deg, rgba(255,140,0,.08), rgba(255,255,255,.04));
+      border:1px solid rgba(255,255,255,.08);
+      transition:.25s ease;
+    ">
+      <div class="rankLeft">
+        <div class="rankNum">${i+1}º</div>
+        <div>
+          <div class="rankName">${esc(name)}</div>
+          <div style="font-size:14px;margin-top:4px">${emojis[i] || "💪"}</div>
         </div>
-      `).join("");
+      </div>
 
-      return `
-        <div class="hint">Use as setas para ordenar do <b>mais prioritário</b> (1º) ao <b>menos prioritário</b> (9º).</div>
-        <div class="rankList">${rows}</div>
+      <div class="rankBtns">
+        <button class="miniBtn" data-m="up" data-i="${i}" ${i===0?"disabled":""}>↑</button>
+        <button class="miniBtn" data-m="down" data-i="${i}" ${i===state.priority.length-1?"disabled":""}>↓</button>
+      </div>
+    </div>
+  `).join("");
 
-        ${pyramidHTML()}
+  return `
+    <div class="hint">
+      💎 Organize seus grupos musculares por prioridade.<br>
+      🔥 O topo representa seu foco máximo.<br>
+      🚀 Visual Premium apenas para experiência.
+    </div>
 
-        <div class="btnRow">
-          <button class="btn" id="p3">Voltar</button>
-          <button class="btn primary" id="n3">Próxima etapa</button>
-        </div>
-      `;
-    }
+    <div class="rankList" style="margin-top:18px">
+      ${rows}
+    </div>
+
+    <div class="btnRow">
+      <button class="btn" id="p3">Voltar</button>
+      <button class="btn primary" id="n3">Próxima etapa</button>
+    </div>
+  `;
+}
 
     function step4(){
       return `
@@ -559,14 +519,12 @@
     }
 
     function step5(){
-      // ====== MODELOS (ponto 2): assets/fotos-modelo/01.jpg ======
       const modelos = Array.from({length:10}, (_,i)=>{
         const n = String(i+1).padStart(2,"0");
-        const src = `assets/fotos-modelo/${n}.jpg`;
         return `
           <div class="modelCard">
-            <img src="${src}" alt="Modelo ${n}"
-              onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=&quot;padding:18px;color:rgba(255,255,255,.8);text-align:center&quot;>Coloque<br><b>${src}</b><br>no Git</div>';">
+            <img src="assets/fotos-modelo/${n}.jpg" alt="Modelo ${n}"
+              onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=&quot;padding:18px;color:rgba(255,255,255,.8);text-align:center&quot;>Não achou:<br><b>assets/fotos-modelo/${n}.jpg</b></div>';">
             <div class="modelCap">
               <span>Modelo ${n}</span>
               <span class="tag">Exemplo</span>
@@ -607,13 +565,10 @@
     }
 
     function step6(){
-      const prioText = state.priority.map((m,i)=>`${i+1}. ${m}`).join(" • ");
-
       return `
         <div class="done">
           <h2>ENVIO CONCLUÍDO!</h2>
           <p>Perfeito! Seu treinador recebeu as informações e fotos.</p>
-
           <div class="summary">
             <table>
               <tr><td>Código</td><td><b>${esc(state.student_code)}</b></td></tr>
@@ -621,12 +576,8 @@
               <tr><td>Objetivo</td><td>${esc(state.goal||"-")}</td></tr>
               <tr><td>Uploads</td><td>${state.uploads.filter(x=>x.ok).length}/10</td></tr>
               <tr><td>ID do envio</td><td style="font-family:ui-monospace, Menlo, monospace">${esc(state.submissionId||"-")}</td></tr>
-              <tr><td>Pirâmide</td><td>${esc(prioText)}</td></tr>
             </table>
           </div>
-
-          ${pyramidHTML()}
-
           <div class="btnRow" style="justify-content:center">
             <button class="btn primary" onclick="location.reload()">Enviar outro aluno</button>
           </div>
@@ -654,10 +605,6 @@
       const n1=$("#n1"); if(n1) n1.onclick=()=>{
         if(!state.student_code || !state.full_name){
           toast("Preencha o CÓDIGO do aluno e o NOME completo.");
-          return;
-        }
-        if(!isValidStudentCode(state.student_code)){
-          toast("Código inválido. Use o formato VF-000 (ex: VF-001).");
           return;
         }
         next();
@@ -722,6 +669,7 @@
 
         try{
           toast("Enviando dados...");
+
           const payload={
             student_code: state.student_code,
             full_name: state.full_name,
@@ -746,38 +694,37 @@
           state.submissionId = data.id;
 
           toast("Enviando fotos...");
-          const uploadedPaths = [];
+          const paths = [];
 
           for(let i=0;i<10;i++){
             const f=state.uploads[i].file;
             const n=String(i+1).padStart(2,"0");
             const ext=(f.name.split(".").pop()||"jpg").toLowerCase();
-            const path = `${state.student_code}/${state.submissionId}/${n}.${ext}`;
+            const safeExt = ext.replace(/[^a-z0-9]/g,"") || "jpg";
+            const path = `${state.student_code}/${state.submissionId}/${n}.${safeExt}`;
 
             const { error: upErr } = await supabase
               .storage.from(BUCKET)
-              .upload(path, f, { upsert:true, contentType:f.type });
+              .upload(path, f, { upsert:true, contentType:f.type, cacheControl:"3600" });
 
             if(upErr) throw upErr;
-            uploadedPaths.push(path);
+
+            paths.push(path);
           }
 
-          // ====== Salva photo_paths (ponto 3) ======
-          const { error: updErr } = await supabase
+          const { error: up2 } = await supabase
             .from(TABLE)
-            .update({ photo_paths: uploadedPaths })
+            .update({ photo_paths: paths })
             .eq("id", state.submissionId);
 
-          if(updErr) throw updErr;
-
-          state.photo_paths = uploadedPaths;
+          if(up2) throw up2;
 
           toast("Enviado ✅");
           next();
         }catch(err){
           console.error(err);
           alert("Erro ao enviar:\n" + (err?.message || JSON.stringify(err)));
-          toast("Falha ao enviar. Confira RLS/policies da tabela e do bucket.");
+          toast("Falha ao enviar. Confira policy do bucket (INSERT) e RLS da tabela.");
         }finally{
           send.disabled=false;
           send.textContent="Enviar";
@@ -785,13 +732,8 @@
       };
     }
 
-    // Segurança: se der erro JS, você vê no console e não fica “tudo em branco”
-    try{
-      render();
-    }catch(e){
-      console.error(e);
-      alert("Erro no script do anamnese.html. Abra o console (F12) para ver detalhes.");
-    }
+    // 🔥 garante que roda depois que DOM existe
+    render();
   </script>
 </body>
 </html>
