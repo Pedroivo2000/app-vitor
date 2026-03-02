@@ -265,6 +265,72 @@
     .summary table{width:100%;border-collapse:collapse;font-size:13px}
     .summary td{padding:12px 10px;border-bottom:1px solid rgba(255,255,255,.08)}
     .summary td:first-child{color:rgba(255,255,255,.70);width:35%}
+    /* ===== Pirâmide Premium (visual apenas) ===== */
+.pyrWrap{margin-top:14px}
+.pyrTitle{
+  font-size:12px;font-weight:900;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(255,255,255,.82);
+  margin-top:18px;
+}
+.pyrHint{
+  margin-top:8px;
+  color:rgba(255,255,255,.78);
+  font-size:13px;
+  line-height:1.45;
+  background:rgba(0,0,0,.14);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:18px;
+  padding:12px 12px;
+}
+.pyr{
+  margin-top:12px;
+  display:grid;
+  gap:10px;
+}
+.tier{
+  position:relative;
+  margin:0 auto;
+  width:var(--w);
+  max-width:100%;
+  background:rgba(0,0,0,.18);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:18px;
+  padding:12px 12px;
+  box-shadow:0 10px 24px rgba(0,0,0,.18);
+}
+.tierInner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.tierLeft{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+}
+.badge{
+  width:44px;height:44px;
+  border-radius:16px;
+  display:grid;place-items:center;
+  background:rgba(255,140,0,.18);
+  border:1px solid rgba(255,140,0,.35);
+  font-weight:900;
+  flex:0 0 auto;
+}
+.tierName{
+  font-weight:900;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.tierEmo{
+  font-size:18px;
+  opacity:.95;
+  flex:0 0 auto;
+}
   </style>
 </head>
 
@@ -442,23 +508,12 @@
     }
 
     function step3(){
-
-  const emojis = ["🔥","💎","🚀","💪","⚡","🏆","🎯","📈","🛡️"];
-
   const rows = state.priority.map((name, i)=>`
-    <div class="rankItem" style="
-      background:linear-gradient(145deg, rgba(255,140,0,.08), rgba(255,255,255,.04));
-      border:1px solid rgba(255,255,255,.08);
-      transition:.25s ease;
-    ">
+    <div class="rankItem">
       <div class="rankLeft">
         <div class="rankNum">${i+1}º</div>
-        <div>
-          <div class="rankName">${esc(name)}</div>
-          <div style="font-size:14px;margin-top:4px">${emojis[i] || "💪"}</div>
-        </div>
+        <div class="rankName">${esc(name)}</div>
       </div>
-
       <div class="rankBtns">
         <button class="miniBtn" data-m="up" data-i="${i}" ${i===0?"disabled":""}>↑</button>
         <button class="miniBtn" data-m="down" data-i="${i}" ${i===state.priority.length-1?"disabled":""}>↓</button>
@@ -466,14 +521,43 @@
     </div>
   `).join("");
 
-  return `
-    <div class="hint">
-      💎 Organize seus grupos musculares por prioridade.<br>
-      🔥 O topo representa seu foco máximo.<br>
-    </div>
+  // emojis por posição (só visual)
+  const posEmoji = (idx)=>{
+    if(idx===0) return "🔥";
+    if(idx===1) return "💎";
+    if(idx===2) return "🚀";
+    if(idx===3) return "💪";
+    if(idx===4) return "⚡";
+    return "✅";
+  };
 
-    <div class="rankList" style="margin-top:18px">
-      ${rows}
+  // pirâmide: topo mais estreito, base mais larga
+  const tiers = state.priority.map((name, i)=>{
+    const width = 62 + (i * 4); // 62% até ~94%
+    return `
+      <div class="tier" style="--w:${width}%">
+        <div class="tierInner">
+          <div class="tierLeft">
+            <div class="badge">${i+1}º</div>
+            <div class="tierName">${esc(name)}</div>
+          </div>
+          <div class="tierEmo">${posEmoji(i)}</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  return `
+    <div class="hint">Use as setas para ordenar do <b>mais prioritário</b> (1º) ao <b>menos prioritário</b> (9º).</div>
+    <div class="rankList">${rows}</div>
+
+    <div class="pyrWrap">
+      <div class="pyrTitle">Pirâmide de prioridade</div>
+      <div class="pyrHint">
+        💎 Organize seus grupos musculares por prioridade.<br>
+        🔥 O topo representa seu foco máximo.
+      </div>
+      <div class="pyr">${tiers}</div>
     </div>
 
     <div class="btnRow">
