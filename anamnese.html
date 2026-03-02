@@ -7,10 +7,10 @@
 
   <style>
     :root{
-      --navy:#0B1F3B;     /* base */
-      --navy2:#07182B;    /* texto escuro */
+      --navy:#0B1F3B;
+      --navy2:#07182B;
       --ink:#0a0f18;
-      --orange:#FF8C00;   /* laranja */
+      --orange:#FF8C00;
       --orange2:#ff7a00;
       --white:#ffffff;
       --muted:rgba(255,255,255,.75);
@@ -32,7 +32,6 @@
 
     .wrap{max-width:980px;margin:0 auto;padding:18px 14px 80px}
 
-    /* Top */
     .top{
       position:sticky;top:10px;z-index:10;
       display:flex;align-items:center;justify-content:space-between;gap:12px;
@@ -76,7 +75,6 @@
     }
     .bar > div{height:100%;width:0;background:linear-gradient(90deg, var(--orange), #ffd08a)}
 
-    /* Card */
     .card{
       margin-top:14px;
       background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
@@ -161,7 +159,6 @@
     }
     .btn:disabled{opacity:.55;cursor:not-allowed}
 
-    /* Ranking / Pirâmide */
     .rankList{display:grid;gap:10px;margin-top:8px}
     .rankItem{
       display:flex;align-items:center;justify-content:space-between;gap:10px;
@@ -193,7 +190,6 @@
     }
     .miniBtn:disabled{opacity:.35;cursor:not-allowed}
 
-    /* Modelos */
     .models{
       display:grid;gap:10px;margin-top:10px;
       grid-template-columns:repeat(2,1fr);
@@ -225,7 +221,6 @@
       letter-spacing:.08em;
     }
 
-    /* Uploads */
     .uploads{display:grid;gap:10px;margin-top:12px}
     @media(min-width:820px){ .uploads{grid-template-columns:1fr 1fr} }
     .upCard{
@@ -239,7 +234,6 @@
     .status.ok{color:#22c55e}
     .status.err{color:#ef4444}
 
-    /* Toast */
     .toast{
       position:fixed;left:50%;bottom:16px;transform:translateX(-50%);
       background:rgba(11,31,59,.96);
@@ -303,18 +297,17 @@
 
   <div class="toast" id="toast"></div>
 
-  <!-- Supabase v2 (CDN) -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- ✅ SUPABASE via ESM (estável na Vercel) -->
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  <script>
     // ========= SUPABASE CONFIG =========
     const PROJECT_URL = "https://kjigccxaggwtpoosihbl.supabase.co";
     const ANON_KEY    = "sb_publishable_Rzfa6WmpntiKSlpNDDDgcw_nVcY_Xt7";
     const BUCKET      = "anamnese-fotos";
     const TABLE       = "anamnese_submissions";
 
-    // cria o client aqui (sem js externo)
-    const supabase = window.supabase.createClient(PROJECT_URL, ANON_KEY);
+    const supabase = createClient(PROJECT_URL, ANON_KEY);
 
     // ========= UI =========
     const $ = (s)=>document.querySelector(s);
@@ -508,14 +501,12 @@
     }
 
     function step5(){
-      // ✅ CORRIGIDO: caminho real no git -> assets/fotos-modelo/01.jpg ... 10.jpg
       const modelos = Array.from({length:10}, (_,i)=>{
         const n = String(i+1).padStart(2,"0");
         return `
           <div class="modelCard">
-            <img src="assets/fotos-modelo/${n}.jpg"
-                 alt="Modelo ${n}"
-                 onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=&quot;padding:18px;color:rgba(255,255,255,.8);text-align:center&quot;>Coloque<br><b>assets/fotos-modelo/${n}.jpg</b><br>no Git</div>';">
+            <img src="assets/fotos-modelo/${n}.jpg" alt="Modelo ${n}"
+              onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=&quot;padding:18px;color:rgba(255,255,255,.8);text-align:center&quot;>Não achou:<br><b>assets/fotos-modelo/${n}.jpg</b></div>';">
             <div class="modelCap">
               <span>Modelo ${n}</span>
               <span class="tag">Exemplo</span>
@@ -554,7 +545,8 @@
         </div>
       `;
     }
-function step6(){
+
+    function step6(){
       return `
         <div class="done">
           <h2>ENVIO CONCLUÍDO!</h2>
@@ -573,7 +565,8 @@ function step6(){
           </div>
         </div>
       `;
-}
+    }
+
     function render(){
       renderNav(); header();
       const c=$("#content");
@@ -672,7 +665,6 @@ function step6(){
             muscle_priority: state.priority
           };
 
-          // cria submissão e pega id
           const { data, error } = await supabase
             .from(TABLE)
             .insert(payload)
@@ -694,15 +686,14 @@ function step6(){
             const path = `${state.student_code}/${state.submissionId}/${n}.${safeExt}`;
 
             const { error: upErr } = await supabase
-              .storage
-              .from(BUCKET)
+              .storage.from(BUCKET)
               .upload(path, f, { upsert:true, contentType:f.type, cacheControl:"3600" });
 
             if(upErr) throw upErr;
+
             paths.push(path);
           }
 
-          // ✅ grava os caminhos no campo photo_paths (que você criou)
           const { error: up2 } = await supabase
             .from(TABLE)
             .update({ photo_paths: paths })
@@ -723,6 +714,7 @@ function step6(){
       };
     }
 
+    // 🔥 garante que roda depois que DOM existe
     render();
   </script>
 </body>
