@@ -6,12 +6,9 @@
 
   <title>Vitor Freitas</title>
 
-  <!-- iOS "modo app" (quando adiciona à Tela de Início) -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Vitor Freitas" />
-
-  <!-- Android / tema -->
   <meta name="theme-color" content="#0B1F3B" />
 
   <link rel="manifest" href="/manifest.webmanifest" />
@@ -30,8 +27,8 @@
       touch-action: manipulation;
     }
 
-    /* Capa */
-    .capa{
+    /* Capa de fundo */
+    .capa {
       position: fixed;
       inset: 0;
       width: 100vw;
@@ -40,51 +37,141 @@
       z-index: 1;
     }
 
-    /* Botão */
-    .botao-container{
+    /* Overlay escuro sobre a capa */
+    .overlay {
       position: fixed;
-      left: 0;
-      right: 0;
-      bottom: calc(24px + env(safe-area-inset-bottom));
-      display: flex;
-      justify-content: center;
-      padding: 0 16px;
+      inset: 0;
       z-index: 2;
+      background: linear-gradient(
+        to bottom,
+        rgba(7, 24, 43, 0.45) 0%,
+        rgba(7, 24, 43, 0.75) 60%,
+        rgba(7, 24, 43, 0.97) 100%
+      );
     }
 
-    button{
-      width: min(420px, 92vw);
-      padding: 20px;
+    /* Container do login */
+    .login-box {
+      position: fixed;
+      inset: 0;
+      z-index: 3;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0 20px calc(40px + env(safe-area-inset-bottom));
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .login-label {
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .70);
+      text-align: center;
+    }
+
+    .input-wrap input {
+      width: 100%;
+      padding: 20px 20px;
       font-size: 22px;
-      font-weight: 700;
-      background: #FF7A00;
+      font-weight: 900;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      text-align: center;
+      background: rgba(255, 255, 255, .08);
+      border: 1.5px solid rgba(255, 255, 255, .18);
+      border-radius: 18px;
       color: #fff;
-      border: 0;
-      border-radius: 16px;
-      cursor: pointer;
-      box-shadow: 0 8px 20px rgba(0,0,0,.30);
+      outline: none;
+      transition: border-color .2s, background .2s;
+      -webkit-appearance: none;
     }
 
-    button:active { transform: scale(.97); }
+    .input-wrap input::placeholder {
+      color: rgba(255, 255, 255, .30);
+      font-weight: 700;
+      letter-spacing: .12em;
+    }
 
-    /* Iframe (Power BI) */
-    #biFrame{
+    .input-wrap input:focus {
+      border-color: rgba(255, 140, 0, .70);
+      background: rgba(255, 140, 0, .07);
+    }
+
+    .input-wrap input.erro {
+      border-color: rgba(239, 68, 68, .80);
+      background: rgba(239, 68, 68, .07);
+      animation: shake .35s ease;
+    }
+
+    .erro-msg {
+      margin-top: -6px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .10em;
+      text-transform: uppercase;
+      color: #ef4444;
+      text-align: center;
+      min-height: 18px;
+      opacity: 0;
+      transition: opacity .2s;
+    }
+
+    .erro-msg.show { opacity: 1; }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-8px); }
+      40%      { transform: translateX(8px); }
+      60%      { transform: translateX(-5px); }
+      80%      { transform: translateX(5px); }
+    }
+
+    button.acessar {
+      width: 100%;
+      padding: 20px;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      background: linear-gradient(180deg, #ff9a1a, #ff7a00);
+      color: #0b0f14;
+      border: 0;
+      border-radius: 18px;
+      cursor: pointer;
+      box-shadow: 0 10px 28px rgba(255, 122, 0, .35);
+      transition: opacity .15s, transform .15s;
+    }
+
+    button.acessar:active  { transform: scale(.97); opacity: .9; }
+    button.acessar:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    /* Iframe */
+    #biFrame {
       position: fixed;
       inset: 0;
       width: 100vw;
       height: 100vh;
       border: none;
       display: none;
-      z-index: 3;
+      z-index: 10;
       background: #0B1F3B;
     }
 
     /* Loading */
-    #loading{
+    #loading {
       position: fixed;
       inset: 0;
       display: none;
-      z-index: 4;
+      z-index: 11;
       background: #0B1F3B;
       align-items: center;
       justify-content: center;
@@ -94,21 +181,12 @@
       padding: 24px;
     }
 
-    #loading img{
-      width: 120px;
-      height: 120px;
-      border-radius: 24px;
-    }
+    #loading img { width: 120px; height: 120px; border-radius: 24px; }
 
-    #loading .txt{
-      color: #fff;
-      font-size: 18px;
-      font-weight: 700;
-    }
+    #loading .txt { color: #fff; font-size: 18px; font-weight: 700; }
 
-    .spinner{
-      width: 34px;
-      height: 34px;
+    .spinner {
+      width: 34px; height: 34px;
       border-radius: 999px;
       border: 4px solid rgba(255,255,255,.25);
       border-top-color: #FF7A00;
@@ -120,18 +198,31 @@
 </head>
 
 <body>
-  <img src="capa.png" class="capa" alt="Vitor Freitas" />
 
-  <div class="botao-container" id="btnBox">
-    <button onclick="acessar()">Acessar</button>
+  <img src="capa.png" class="capa" alt="Vitor Freitas" />
+  <div class="overlay"></div>
+
+  <div class="login-box" id="loginBox">
+    <div class="login-card">
+      <div class="login-label">Digite seu código de acesso</div>
+      <div class="input-wrap">
+        <input
+          id="codigoInput"
+          type="text"
+          placeholder="VF-000"
+          maxlength="6"
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+          inputmode="text"
+        />
+      </div>
+      <div class="erro-msg" id="erroMsg"></div>
+      <button class="acessar" id="btnAcessar">Acessar</button>
+    </div>
   </div>
 
-  <iframe
-    id="biFrame"
-    allowfullscreen
-    scrolling="no"
-    referrerpolicy="no-referrer-when-downgrade"
-  ></iframe>
+  <iframe id="biFrame" allowfullscreen scrolling="no" referrerpolicy="no-referrer-when-downgrade"></iframe>
 
   <div id="loading">
     <img src="icone.png" alt="Vitor Freitas" />
@@ -139,30 +230,96 @@
     <div class="spinner"></div>
   </div>
 
-  <script>
-    function acessar() {
-      // Seu link (com chromeless=1 no final)
-      const url =
-        "https://app.powerbi.com/view?r=eyJrIjoiZDgxYTZmZTItODhiMy00MzU0LThlOGEtYTk2YWNjMWI1Zjk5IiwidCI6ImQwYzY5OGQ0LWU0ZWEtNGVlOS1hNzlkLWYyZDdhNzgzOTljOCJ9&chromeless=1";
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-      // Esconde capa + botão
+    const PROJECT_URL = "https://kjigccxaggwtpoosihbl.supabase.co";
+    const ANON_KEY    = "sb_publishable_Rzfa6WmpntiKSlpNDDDgcw_nVcY_Xt7";
+    const supabase    = createClient(PROJECT_URL, ANON_KEY);
+
+    const REGEX      = /^VF-\d{3}$/;
+    const input      = document.getElementById("codigoInput");
+    const btnAcessar = document.getElementById("btnAcessar");
+    const erroMsg    = document.getElementById("erroMsg");
+    const loginBox   = document.getElementById("loginBox");
+    const loading    = document.getElementById("loading");
+    const frame      = document.getElementById("biFrame");
+
+    // Formata automaticamente: VF- fixo + até 3 dígitos
+    input.addEventListener("input", () => {
+      let val = input.value.toUpperCase().replace(/[^A-Z0-9-]/g, "");
+      if (!val.startsWith("VF-")) {
+        const nums = val.replace(/[^0-9]/g, "");
+        val = "VF-" + nums;
+      }
+      input.value = val.slice(0, 6);
+      setErro("");
+    });
+
+    input.addEventListener("focus", () => {
+      if (!input.value) input.value = "VF-";
+    });
+
+    input.addEventListener("blur", () => {
+      if (input.value === "VF-") input.value = "";
+    });
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") acessar();
+    });
+
+    btnAcessar.addEventListener("click", acessar);
+
+    function setErro(msg) {
+      erroMsg.textContent = msg;
+      erroMsg.classList.toggle("show", !!msg);
+      input.classList.toggle("erro", !!msg);
+    }
+
+    async function acessar() {
+      const codigo = input.value.trim().toUpperCase();
+
+      if (!REGEX.test(codigo)) {
+        setErro("Código inválido. Use o formato VF-000.");
+        input.focus();
+        return;
+      }
+
+      btnAcessar.disabled = true;
+      btnAcessar.textContent = "Verificando...";
+      setErro("");
+
+      const { data, error } = await supabase
+        .from("alunos")
+        .select("link_powerbi, nome")
+        .eq("codigo", codigo)
+        .single();
+
+      if (error || !data) {
+        setErro("Código não encontrado. Verifique com seu treinador.");
+        btnAcessar.disabled = false;
+        btnAcessar.textContent = "Acessar";
+        input.focus();
+        return;
+      }
+
+      // Esconde tela de login
+      loginBox.style.display = "none";
       document.querySelector(".capa").style.display = "none";
-      document.getElementById("btnBox").style.display = "none";
+      document.querySelector(".overlay").style.display = "none";
 
       // Mostra loading
-      const loading = document.getElementById("loading");
       loading.style.display = "flex";
 
-      // Abre iframe
-      const frame = document.getElementById("biFrame");
+      const url = data.link_powerbi.includes("chromeless=1")
+        ? data.link_powerbi
+        : data.link_powerbi + "&chromeless=1";
+
       frame.style.display = "block";
       frame.src = url;
 
-      // Quando carregar, tira loading
       frame.onload = () => {
-        setTimeout(() => {
-          loading.style.display = "none";
-        }, 600);
+        setTimeout(() => { loading.style.display = "none"; }, 600);
       };
     }
   </script>
