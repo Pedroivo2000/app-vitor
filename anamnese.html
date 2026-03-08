@@ -6,32 +6,45 @@
   <title>Anamnese • Vitor Freitas</title>
 
   <style>
+    /* =====================================================
+      VARIÁVEIS CSS (Design Tokens)
+      Centraliza as cores e valores reutilizados no projeto.
+      Alterar aqui reflete em todo o visual da página.
+    ===================================================== */
     :root{
-      --navy:#0B1F3B;
-      --navy2:#07182B;
-      --ink:#0a0f18;
-      --orange:#FF8C00;
-      --orange2:#ff7a00;
+      --navy:#0B1F3B;                        /* Azul escuro principal */
+      --navy2:#07182B;                       /* Azul ainda mais escuro */
+      --ink:#0a0f18;                         /* Quase preto */
+      --orange:#FF8C00;                      /* Laranja principal */
+      --orange2:#ff7a00;                     /* Laranja mais intenso */
       --white:#ffffff;
-      --muted:rgba(255,255,255,.75);
-      --card:rgba(255,255,255,.06);
-      --stroke:rgba(255,255,255,.12);
-      --shadow:0 14px 35px rgba(0,0,0,.35);
-      --radius:22px;
+      --muted:rgba(255,255,255,.75);         /* Branco semi-transparente */
+      --card:rgba(255,255,255,.06);          /* Fundo dos cards */
+      --stroke:rgba(255,255,255,.12);        /* Bordas sutis */
+      --shadow:0 14px 35px rgba(0,0,0,.35); /* Sombra padrão */
+      --radius:22px;                         /* Borda arredondada padrão */
     }
 
+    /* Reset e configuração base */
     *{margin:0;padding:0;box-sizing:border-box}
     html,body{height:100%}
     body{
       font-family: Arial, sans-serif;
+      /* Gradiente de fundo: brilho laranja suave no topo + azul escuro para baixo */
       background: radial-gradient(900px 500px at 50% -30%, rgba(255,140,0,.25), transparent 65%),
                   linear-gradient(180deg, #07152a, #050b14);
       color:var(--white);
-      overflow-x:hidden;
+      overflow-x:hidden;  /* Evita scroll horizontal */
     }
 
+    /* Wrapper central com padding inferior para não ficar atrás do botão */
     .wrap{max-width:980px;margin:0 auto;padding:18px 14px 80px}
 
+    /* =====================================================
+      BARRA SUPERIOR FIXA (sticky)
+      Permanece visível ao rolar. Contém logo, barra de
+      progresso e chip com número da etapa atual.
+    ===================================================== */
     .top{
       position:sticky;top:10px;z-index:10;
       display:flex;align-items:center;justify-content:space-between;gap:12px;
@@ -40,9 +53,11 @@
       border:1px solid var(--stroke);
       border-radius:24px;
       box-shadow:var(--shadow);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);  /* Efeito de vidro fosco */
     }
     .brand{display:flex;align-items:center;gap:12px;min-width:0}
+
+    /* Círculo com iniciais "VF" */
     .logo{
       width:38px;height:38px;border-radius:999px;
       display:grid;place-items:center;
@@ -51,15 +66,21 @@
       font-weight:900;letter-spacing:.5px;
     }
     .brandTxt{min-width:0}
+
+    /* Nome do personal "VITOR FREITAS" */
     .brandTxt .t1{
       font-size:14px;font-weight:900;letter-spacing:.18em;
       text-transform:uppercase;color:var(--orange);
       white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
     }
+
+    /* Subtítulo "Anamnese do aluno" */
     .brandTxt .t2{
       margin-top:4px;font-size:12px;color:var(--muted);
       letter-spacing:.12em;text-transform:uppercase;
     }
+
+    /* Chip com "ETAPA X DE 6" no canto direito */
     .stepChip{
       font-size:12px;font-weight:900;
       letter-spacing:.14em;text-transform:uppercase;
@@ -69,12 +90,18 @@
       padding:8px 10px;border-radius:999px;
       white-space:nowrap;
     }
+
+    /* Barra de progresso — largura atualizada via JS conforme avança etapas */
     .bar{
       height:4px;border-radius:999px;background:rgba(255,255,255,.12);
       overflow:hidden;margin-top:10px
     }
     .bar > div{height:100%;width:0;background:linear-gradient(90deg, var(--orange), #ffd08a)}
 
+    /* =====================================================
+      CARD PRINCIPAL
+      Contém o cabeçalho da etapa e o formulário
+    ===================================================== */
     .card{
       margin-top:14px;
       background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
@@ -83,22 +110,24 @@
       box-shadow:var(--shadow);
       overflow:hidden;
     }
+
+    /* Cabeçalho do card: título, descrição e navegação por etapas */
     .head{
       padding:22px 18px 16px;
       border-bottom:1px solid rgba(255,255,255,.10);
     }
-    .head h1{
-      font-size:42px;line-height:1.02;letter-spacing:.02em;
-    }
-    .head h1 span{color:var(--orange)}
+    .head h1{font-size:42px;line-height:1.02;letter-spacing:.02em;}
+    .head h1 span{color:var(--orange)}   /* Destaque laranja na segunda palavra do título */
     .head p{
       margin-top:10px;color:var(--muted);line-height:1.45;font-size:14px;
       max-width:60ch;
     }
 
-    .nav{
-      display:flex;gap:10px;flex-wrap:wrap;margin-top:14px
-    }
+    /* =====================================================
+      NAVEGAÇÃO POR ETAPAS (pills)
+      Botões clicáveis para navegar entre as 6 etapas
+    ===================================================== */
+    .nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
     .pill{
       font-size:12px;letter-spacing:.12em;text-transform:uppercase;
       padding:8px 10px;border-radius:999px;
@@ -107,15 +136,17 @@
       color:rgba(255,255,255,.88);
       cursor:pointer;user-select:none;
     }
+    /* Etapa ativa destacada em laranja */
     .pill.active{
       border-color:rgba(255,140,0,.45);
       background:rgba(255,140,0,.16);
-      color:#fff;
-      font-weight:900;
+      color:#fff;font-weight:900;
     }
 
+    /* Área de conteúdo do formulário */
     .body{padding:18px}
 
+    /* Labels dos campos */
     label{
       display:block;
       font-size:12px;font-weight:900;
@@ -123,6 +154,8 @@
       color:rgba(255,255,255,.82);
       margin-top:14px;
     }
+
+    /* Campos de formulário: input, select e textarea */
     input,select,textarea{
       width:100%;
       margin-top:8px;
@@ -133,30 +166,37 @@
       color:#fff;
       outline:none;
     }
+
+    /* Campo desabilitado (código pré-preenchido via URL) */
     input:disabled{
       opacity:.6;
       cursor:not-allowed;
-      background:rgba(255,140,0,.08);
-      border-color:rgba(255,140,0,.25);
+      background:rgba(255,140,0,.08);    /* Fundo levemente laranja */
+      border-color:rgba(255,140,0,.25);  /* Borda laranja suave */
     }
+
     textarea{min-height:92px;resize:vertical}
+
+    /* Texto de ajuda abaixo dos campos */
     .hint{margin-top:8px;color:rgba(255,255,255,.70);font-size:12px;line-height:1.4}
 
+    /* Grid responsivo para campos lado a lado */
     .grid{display:grid;gap:14px}
     @media(min-width:820px){
-      .grid.cols2{grid-template-columns:1fr 1fr}
+      .grid.cols2{grid-template-columns:1fr 1fr}  /* 2 colunas em telas maiores */
     }
 
+    /* Linha de botões (Voltar / Próxima etapa) */
     .btnRow{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
     .btn{
       border:0;cursor:pointer;
       padding:16px 18px;border-radius:18px;
-      font-weight:900;letter-spacing:.06em;
-      text-transform:uppercase;
+      font-weight:900;letter-spacing:.06em;text-transform:uppercase;
       background:rgba(255,255,255,.08);
       color:#fff;
       border:1px solid rgba(255,255,255,.14);
     }
+    /* Botão primário laranja (ação principal) */
     .btn.primary{
       background:linear-gradient(180deg, #ff9a1a, #ff7a00);
       color:#0b0f14;
@@ -165,15 +205,19 @@
     }
     .btn:disabled{opacity:.55;cursor:not-allowed}
 
+    /* =====================================================
+      ETAPA 3: PIRÂMIDE DE PREFERÊNCIA
+      Lista reordenável de grupos musculares
+    ===================================================== */
     .rankList{display:grid;gap:10px;margin-top:8px}
     .rankItem{
       display:flex;align-items:center;justify-content:space-between;gap:10px;
-      padding:12px 12px;
-      border-radius:18px;
+      padding:12px 12px;border-radius:18px;
       background:rgba(0,0,0,.18);
       border:1px solid rgba(255,255,255,.10);
     }
     .rankLeft{display:flex;align-items:center;gap:10px;min-width:0}
+    /* Número de posição (1º, 2º...) */
     .rankNum{
       width:40px;height:40px;border-radius:16px;
       display:grid;place-items:center;
@@ -181,71 +225,72 @@
       border:1px solid rgba(255,140,0,.35);
       font-weight:900;
     }
-    .rankName{
-      font-weight:900;
-      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-    }
+    .rankName{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .rankBtns{display:flex;gap:8px}
+    /* Botões ↑ e ↓ para mover os grupos musculares */
     .miniBtn{
       padding:10px 12px;border-radius:14px;
       background:rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.12);
-      color:#fff;
-      font-weight:900;
-      cursor:pointer;
+      color:#fff;font-weight:900;cursor:pointer;
     }
     .miniBtn:disabled{opacity:.35;cursor:not-allowed}
 
+    /* =====================================================
+      ETAPA 5: FOTOS DE AVALIAÇÃO
+      Grid de fotos modelo + uploads do aluno
+    ===================================================== */
     .models{
       display:grid;gap:10px;margin-top:10px;
-      grid-template-columns:repeat(2,1fr);
+      grid-template-columns:repeat(2,1fr);   /* 2 colunas no mobile */
     }
-    @media(min-width:820px){ .models{grid-template-columns:repeat(5,1fr)} }
+    @media(min-width:820px){ .models{grid-template-columns:repeat(5,1fr)} }  /* 5 colunas no desktop */
+
+    /* Card de cada foto modelo */
     .modelCard{
-      border-radius:18px;
-      overflow:hidden;
+      border-radius:18px;overflow:hidden;
       border:1px solid rgba(255,255,255,.12);
       background:rgba(0,0,0,.18);
       box-shadow:0 10px 24px rgba(0,0,0,.25);
     }
-    .modelCard img{
-      width:100%;height:140px;object-fit:cover;display:block;
-    }
+    .modelCard img{width:100%;height:140px;object-fit:cover;display:block;}
     .modelCap{
-      padding:10px 10px;
-      font-size:12px;font-weight:900;
+      padding:10px 10px;font-size:12px;font-weight:900;
       letter-spacing:.12em;text-transform:uppercase;
       color:rgba(255,255,255,.9);
       display:flex;justify-content:space-between;align-items:center;
     }
+
+    /* Badge/tag laranja (ex: "Exemplo", "Foto 01") */
     .tag{
       font-size:11px;font-weight:900;
       padding:6px 10px;border-radius:999px;
       background:rgba(255,140,0,.18);
       border:1px solid rgba(255,140,0,.28);
-      color:#fff;
-      letter-spacing:.08em;
+      color:#fff;letter-spacing:.08em;
     }
 
+    /* Grid de uploads do aluno (2 colunas no desktop) */
     .uploads{display:grid;gap:10px;margin-top:12px}
     @media(min-width:820px){ .uploads{grid-template-columns:1fr 1fr} }
+
+    /* Card de cada upload */
     .upCard{
-      border-radius:18px;
-      padding:12px;
+      border-radius:18px;padding:12px;
       background:rgba(0,0,0,.18);
       border:1px solid rgba(255,255,255,.10);
     }
     .upHead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+
+    /* Status do upload: neutro, ok (verde) ou erro (vermelho) */
     .status{font-size:12px;color:rgba(255,255,255,.70);font-weight:900}
     .status.ok{color:#22c55e}
     .status.err{color:#ef4444}
 
-    /* Badge código VIP */
+    /* Badge de acesso exclusivo — exibido quando código vem pela URL */
     .vipBadge{
       display:inline-flex;align-items:center;gap:8px;
-      margin-top:10px;
-      padding:10px 14px;
-      border-radius:14px;
+      margin-top:10px;padding:10px 14px;border-radius:14px;
       background:rgba(255,140,0,.12);
       border:1px solid rgba(255,140,0,.30);
       font-size:13px;font-weight:900;
@@ -253,6 +298,10 @@
       color:var(--orange);
     }
 
+    /* =====================================================
+      TOAST (notificação flutuante)
+      Aparece na base da tela para mensagens rápidas
+    ===================================================== */
     .toast{
       position:fixed;left:50%;bottom:16px;transform:translateX(-50%);
       background:rgba(11,31,59,.96);
@@ -264,22 +313,19 @@
     }
     .toast.show{display:block}
 
-    .done{
-      text-align:center;padding:26px 16px 28px;
-    }
-    .done h2{
-      font-size:44px;letter-spacing:.04em;
-      color:var(--orange);
-      margin-bottom:10px;
-    }
+    /* =====================================================
+      ETAPA 6: TELA DE CONCLUSÃO
+      Exibida após envio bem-sucedido do formulário
+    ===================================================== */
+    .done{text-align:center;padding:26px 16px 28px;}
+    .done h2{font-size:44px;letter-spacing:.04em;color:var(--orange);margin-bottom:10px;}
     .done p{color:var(--muted);line-height:1.5}
+
+    /* Tabela de resumo com os dados enviados */
     .summary{
-      margin:18px auto 0;
-      max-width:720px;
+      margin:18px auto 0;max-width:720px;
       border:1px solid rgba(255,255,255,.12);
-      border-radius:18px;
-      background:rgba(0,0,0,.18);
-      overflow:auto;
+      border-radius:18px;background:rgba(0,0,0,.18);overflow:auto;
     }
     .summary table{width:100%;border-collapse:collapse;font-size:13px}
     .summary td{padding:12px 10px;border-bottom:1px solid rgba(255,255,255,.08)}
@@ -290,52 +336,84 @@
 <body>
   <div class="wrap">
 
+    <!-- =====================================================
+      BARRA SUPERIOR FIXA
+      Logo, barra de progresso e chip de etapa
+    ===================================================== -->
     <div class="top">
       <div class="brand">
         <div class="logo">VF</div>
         <div class="brandTxt" style="min-width:0">
           <div class="t1">VITOR FREITAS</div>
+          <!-- Barra de progresso — largura atualizada via JS -->
           <div class="bar"><div id="bar"></div></div>
           <div class="t2" id="sub">Anamnese do aluno</div>
         </div>
       </div>
+      <!-- Chip dinâmico: "ETAPA 1 DE 6", "ETAPA 2 DE 6"... -->
       <div class="stepChip" id="chip">ETAPA 1 DE 6</div>
     </div>
 
+    <!-- =====================================================
+      CARD PRINCIPAL
+      Cabeçalho dinâmico + área de conteúdo do formulário
+    ===================================================== -->
     <div class="card">
       <div class="head">
+        <!-- Título e descrição atualizados pelo JS a cada etapa -->
         <h1 id="title">DADOS <span>PESSOAIS</span></h1>
         <p id="desc">Preencha com atenção. Isso ajuda seu treinador a personalizar o programa com segurança.</p>
+        <!-- Pills de navegação geradas pelo JS -->
         <div class="nav" id="nav"></div>
       </div>
 
+      <!-- Conteúdo do formulário injetado pelo JS -->
       <div class="body" id="content"></div>
     </div>
 
   </div>
 
+  <!-- Toast de notificações rápidas -->
   <div class="toast" id="toast"></div>
 
+  <!-- =====================================================
+    JAVASCRIPT — LÓGICA DO FORMULÁRIO
+    type="module" permite usar import/export (ES Modules)
+  ===================================================== -->
   <script type="module">
+
+    // Importa o cliente do Supabase via CDN
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-    // ========= SUPABASE CONFIG =========
+    // =====================================================
+    // CONFIGURAÇÕES DO SUPABASE
+    // =====================================================
     const PROJECT_URL = "https://kjigccxaggwtpoosihbl.supabase.co";
     const ANON_KEY    = "sb_publishable_Rzfa6WmpntiKSlpNDDDgcw_nVcY_Xt7";
-    const BUCKET      = "anamnese-fotos";
-    const TABLE       = "anamnese_submissions";
+    const BUCKET      = "anamnese-fotos";       // Nome do bucket no Supabase Storage
+    const TABLE       = "anamnese_submissions"; // Nome da tabela no banco de dados
 
     const supabase = createClient(PROJECT_URL, ANON_KEY);
 
-    // ========= LÊ O CÓDIGO DA URL =========
+    // =====================================================
+    // LÊ O CÓDIGO DA URL
+    // Se o aluno acessar via link ?aluno=VF-001, o campo
+    // é preenchido automaticamente e bloqueado para edição
+    // =====================================================
     const params = new URLSearchParams(window.location.search);
     const codigoUrl = params.get("aluno")?.trim().toUpperCase() || "";
 
-    // ========= VALIDAÇÃO DO FORMATO VF-000 =========
+    // Expressão regular que valida o formato VF-000
     const REGEX_CODIGO = /^VF-\d{3}$/;
 
-    // ========= UI =========
+    // =====================================================
+    // UTILITÁRIOS
+    // =====================================================
+
+    // Atalho para document.querySelector
     const $ = (s)=>document.querySelector(s);
+
+    // Exibe uma notificação flutuante (toast) por 3.2 segundos
     const toast = (msg)=>{
       const t=$("#toast");
       t.textContent = msg;
@@ -343,10 +421,16 @@
       clearTimeout(window.__tto);
       window.__tto=setTimeout(()=>t.classList.remove("show"), 3200);
     };
+
+    // Escapa caracteres HTML para evitar XSS ao renderizar dados do usuário
     const esc = (v)=> (v??"").toString()
       .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
       .replaceAll('"',"&quot;").replaceAll("'","&#039;");
 
+    // =====================================================
+    // DEFINIÇÃO DAS 6 ETAPAS
+    // Cada etapa tem label (pill), título e descrição
+    // =====================================================
     const steps = [
       { label:"Dados",       title:"DADOS <span>PESSOAIS</span>",           desc:"Preencha com atenção. Isso ajuda seu treinador a personalizar o programa com segurança."},
       { label:"Objetivo",    title:"OBJETIVO <span>& ROTINA</span>",        desc:"Explique seu objetivo e possíveis limitações."},
@@ -356,11 +440,15 @@
       { label:"Final",       title:"ENVIO <span>CONCLUÍDO</span>",          desc:"Pronto! As informações foram enviadas."}
     ];
 
+    // =====================================================
+    // ESTADO GLOBAL DO FORMULÁRIO
+    // Armazena todos os dados enquanto o aluno preenche
+    // =====================================================
     const state = {
       step:0,
       submissionId:null,
-      student_code: codigoUrl, // pré-preenche com código da URL
-      codigoViaUrl: codigoUrl !== "", // flag para bloquear edição se veio pela URL
+      student_code: codigoUrl,          // Pré-preenche com código da URL (se existir)
+      codigoViaUrl: codigoUrl !== "",   // Flag: true = código veio pela URL (bloquear edição)
       full_name:"",
       phone:"",
       birth_date:"",
@@ -369,33 +457,49 @@
       height_cm:"",
       goal:"",
       injuries:"",
+      // Ordem padrão dos grupos musculares (reordenável na etapa 3)
       priority:["Peitoral","Costas","Ombro","Bíceps","Tríceps","Abdômen","Quadríceps","Posterior","Glúteos"],
+      // Array de 10 slots para as fotos de avaliação
       uploads:Array.from({length:10}, ()=>({file:null, ok:false, err:""}))
     };
 
+    // =====================================================
+    // FUNÇÕES DE NAVEGAÇÃO E RENDERIZAÇÃO
+    // =====================================================
+
+    // Renderiza as pills de navegação no cabeçalho
     function renderNav(){
       const nav=$("#nav"); nav.innerHTML="";
       steps.forEach((s,i)=>{
         const el=document.createElement("div");
         el.className="pill"+(i===state.step?" active":"");
         el.textContent=s.label;
-        el.onclick=()=>go(i);
+        el.onclick=()=>go(i);   // Clique na pill navega para aquela etapa
         nav.appendChild(el);
       });
     }
+
+    // Atualiza título, descrição, chip e barra de progresso
     function header(){
       $("#title").innerHTML=steps[state.step].title;
       $("#desc").textContent=steps[state.step].desc;
       $("#chip").textContent=`ETAPA ${state.step+1} DE ${steps.length}`;
+      // Barra de progresso: percentual baseado na etapa atual
       $("#bar").style.width = `${Math.round(((state.step+1)/steps.length)*100)}%`;
       document.querySelectorAll(".pill").forEach((p,i)=>p.classList.toggle("active", i===state.step));
     }
+
+    // Navega para a etapa i (com limites 0 a 5)
     function go(i){ state.step=Math.max(0, Math.min(steps.length-1, i)); render(); }
     function next(){ go(state.step+1); }
     function prev(){ go(state.step-1); }
 
+    // =====================================================
+    // ETAPA 1: DADOS PESSOAIS
+    // Campos: código, nome, nascimento, sexo, peso, altura, telefone
+    // =====================================================
     function step1(){
-      const bloqueado = state.codigoViaUrl;
+      const bloqueado = state.codigoViaUrl;  // Campo bloqueado se código veio pela URL
       return `
         <div class="grid cols2">
           <div>
@@ -407,7 +511,9 @@
               style="text-transform:uppercase"
             />
             ${bloqueado
+              /* Se veio pela URL: mostra badge VIP com o código */
               ? `<div class="vipBadge">🔑 Acesso exclusivo · ${esc(state.student_code)}</div>`
+              /* Se digitado manualmente: mostra instrução de formato */
               : `<div class="hint">Use exatamente o código informado pelo seu treinador. Formato: VF-000</div>`
             }
           </div>
@@ -442,13 +548,16 @@
             <input id="phone" placeholder="(11) 99999-9999" value="${esc(state.phone)}"/>
           </div>
         </div>
-
         <div class="btnRow">
           <button class="btn primary" id="n1">Próxima etapa</button>
         </div>
       `;
     }
 
+    // =====================================================
+    // ETAPA 2: OBJETIVO E ROTINA
+    // Campos: objetivo principal e lesões/restrições
+    // =====================================================
     function step2(){
       return `
         <div class="grid cols2">
@@ -468,7 +577,6 @@
             <textarea id="injuries" placeholder="Ex: dor no joelho, hérnia, etc.">${esc(state.injuries)}</textarea>
           </div>
         </div>
-
         <div class="btnRow">
           <button class="btn" id="p2">Voltar</button>
           <button class="btn primary" id="n2">Próxima etapa</button>
@@ -476,14 +584,17 @@
       `;
     }
 
+    // =====================================================
+    // ETAPA 3: PIRÂMIDE DE PREFERÊNCIA
+    // Lista de 9 grupos musculares reordenável com botões ↑ e ↓
+    // A ordem é salva em state.priority e enviada como JSON ao Supabase
+    // =====================================================
     function step3(){
       const emojis = ["🔥","💎","🚀","💪","⚡","🏆","🎯","📈","🛡️"];
       const rows = state.priority.map((name, i)=>`
         <div class="rankItem" style="
           background:linear-gradient(145deg, rgba(255,140,0,.08), rgba(255,255,255,.04));
-          border:1px solid rgba(255,255,255,.08);
-          transition:.25s ease;
-        ">
+          border:1px solid rgba(255,255,255,.08);transition:.25s ease;">
           <div class="rankLeft">
             <div class="rankNum">${i+1}º</div>
             <div>
@@ -492,6 +603,7 @@
             </div>
           </div>
           <div class="rankBtns">
+            <!-- data-m="up/down" e data-i=índice usados pelo JS para mover itens -->
             <button class="miniBtn" data-m="up" data-i="${i}" ${i===0?"disabled":""}>↑</button>
             <button class="miniBtn" data-m="down" data-i="${i}" ${i===state.priority.length-1?"disabled":""}>↓</button>
           </div>
@@ -501,8 +613,7 @@
       return `
         <div class="hint">
           💎 Organize seus grupos musculares por prioridade.<br>
-          🔥 O topo representa seu foco máximo.<br>
-          🚀 Visual Premium apenas para experiência.
+          🔥 O topo representa seu foco máximo.
         </div>
         <div class="rankList" style="margin-top:18px">${rows}</div>
         <div class="btnRow">
@@ -512,6 +623,10 @@
       `;
     }
 
+    // =====================================================
+    // ETAPA 4: SAÚDE E RESTRIÇÕES
+    // Campos: dor ao treinar, qualidade do sono, observações
+    // =====================================================
     function step4(){
       return `
         <div class="grid cols2">
@@ -545,7 +660,13 @@
       `;
     }
 
+    // =====================================================
+    // ETAPA 5: FOTOS DE AVALIAÇÃO
+    // Mostra 10 fotos modelo como referência visual
+    // Aluno envia 10 fotos (max 10MB cada, apenas imagens)
+    // =====================================================
     function step5(){
+      // Gera os cards das fotos modelo (assets/fotos-modelo/01.jpg a 10.jpg)
       const modelos = Array.from({length:10}, (_,i)=>{
         const n = String(i+1).padStart(2,"0");
         return `
@@ -560,16 +681,19 @@
         `;
       }).join("");
 
+      // Gera os cards de upload (1 por foto, com status dinâmico)
       const ups = state.uploads.map((u,i)=>{
         const n=String(i+1).padStart(2,"0");
         return `
           <div class="upCard">
             <div class="upHead">
               <div class="tag">Foto ${n}</div>
+              <!-- Status: neutro / Selecionada ✅ / Erro ❌ -->
               <div class="status ${u.ok?"ok":(u.err?"err":"")}">
                 ${u.ok?"Selecionada ✅":(u.err?("Erro: "+esc(u.err)):"Selecione uma imagem")}
               </div>
             </div>
+            <!-- data-up=índice usado pelo JS para identificar qual foto foi selecionada -->
             <input type="file" accept="image/*" capture="environment" data-up="${i}" style="margin-top:10px" />
             <div class="hint">Boa iluminação + câmera estável.</div>
           </div>
@@ -589,6 +713,10 @@
       `;
     }
 
+    // =====================================================
+    // ETAPA 6: CONFIRMAÇÃO DE ENVIO
+    // Exibe resumo dos dados enviados e ID da submissão
+    // =====================================================
     function step6(){
       return `
         <div class="done">
@@ -600,6 +728,7 @@
               <tr><td>Nome</td><td>${esc(state.full_name)}</td></tr>
               <tr><td>Objetivo</td><td>${esc(state.goal||"-")}</td></tr>
               <tr><td>Uploads</td><td>${state.uploads.filter(x=>x.ok).length}/10</td></tr>
+              <!-- ID único gerado pelo Supabase para rastrear esta submissão -->
               <tr><td>ID do envio</td><td style="font-family:ui-monospace, Menlo, monospace">${esc(state.submissionId||"-")}</td></tr>
             </table>
           </div>
@@ -610,22 +739,31 @@
       `;
     }
 
+    // =====================================================
+    // FUNÇÃO RENDER
+    // Orquestra toda a renderização da etapa atual
+    // =====================================================
     function render(){
-      renderNav(); header();
+      renderNav();
+      header();
       const c=$("#content");
+      // Seleciona e executa a função da etapa atual (step1 a step6)
       c.innerHTML = [step1,step2,step3,step4,step5,step6][state.step]();
-      bind();
+      bind();  // Re-vincula os eventos após re-renderizar
     }
 
+    // =====================================================
+    // FUNÇÃO BIND
+    // Vincula eventos aos elementos do DOM após cada render
+    // Necessário porque o innerHTML é substituído a cada etapa
+    // =====================================================
     function bind(){
-      // step 1
+      // --- ETAPA 1: vincula campos ao state ---
       const sc=$("#student_code");
       if(sc && !state.codigoViaUrl){
-        sc.oninput=e=>{
-          state.student_code = e.target.value.trim().toUpperCase();
-        };
+        // Só vincula se o código não veio pela URL (campo editável)
+        sc.oninput=e=>{ state.student_code = e.target.value.trim().toUpperCase(); };
       }
-
       const fn=$("#full_name"); if(fn) fn.oninput=e=>state.full_name=e.target.value;
       const ph=$("#phone"); if(ph) ph.oninput=e=>state.phone=e.target.value;
       const bd=$("#birth_date"); if(bd) bd.oninput=e=>state.birth_date=e.target.value;
@@ -633,48 +771,46 @@
       const wk=$("#weight_kg"); if(wk) wk.oninput=e=>state.weight_kg=e.target.value;
       const hc=$("#height_cm"); if(hc) hc.oninput=e=>state.height_cm=e.target.value;
 
+      // Botão "Próxima etapa" da etapa 1 — valida código e nome antes de avançar
       const n1=$("#n1"); if(n1) n1.onclick=()=>{
         if(!state.student_code){
-          toast("Preencha o CÓDIGO do aluno.");
-          return;
+          toast("Preencha o CÓDIGO do aluno."); return;
         }
         if(!REGEX_CODIGO.test(state.student_code)){
-          toast("Código inválido. Use o formato VF-000 (ex: VF-001).");
-          return;
+          toast("Código inválido. Use o formato VF-000 (ex: VF-001)."); return;
         }
         if(!state.full_name){
-          toast("Preencha o NOME completo.");
-          return;
+          toast("Preencha o NOME completo."); return;
         }
         next();
       };
 
-      // step 2
+      // --- ETAPA 2 ---
       const goal=$("#goal"); if(goal) goal.onchange=e=>state.goal=e.target.value;
       const inj=$("#injuries"); if(inj) inj.oninput=e=>state.injuries=e.target.value;
       const p2=$("#p2"); if(p2) p2.onclick=prev;
       const n2=$("#n2"); if(n2) n2.onclick=next;
 
-      // step 3 ranking
+      // --- ETAPA 3: lógica de reordenação dos grupos musculares ---
       document.querySelectorAll("[data-m]").forEach(btn=>{
         btn.onclick=()=>{
-          const dir=btn.getAttribute("data-m");
-          const i=Number(btn.getAttribute("data-i"));
-          const j=dir==="up"?i-1:i+1;
+          const dir=btn.getAttribute("data-m");     // "up" ou "down"
+          const i=Number(btn.getAttribute("data-i")); // índice do item
+          const j=dir==="up"?i-1:i+1;               // índice de destino
           const arr=state.priority.slice();
-          const tmp=arr[i]; arr[i]=arr[j]; arr[j]=tmp;
+          const tmp=arr[i]; arr[i]=arr[j]; arr[j]=tmp;  // Troca os dois itens
           state.priority=arr;
-          render();
+          render();  // Re-renderiza para refletir a nova ordem
         };
       });
       const p3=$("#p3"); if(p3) p3.onclick=prev;
       const n3=$("#n3"); if(n3) n3.onclick=next;
 
-      // step 4
+      // --- ETAPA 4 ---
       const p4=$("#p4"); if(p4) p4.onclick=prev;
       const n4=$("#n4"); if(n4) n4.onclick=next;
 
-      // step 5 uploads
+      // --- ETAPA 5: validação e seleção de cada foto ---
       document.querySelectorAll('input[type="file"][data-up]').forEach(inp=>{
         inp.onchange=()=>{
           const idx=Number(inp.getAttribute("data-up"));
@@ -693,15 +829,14 @@
           render();
         };
       });
-
       const p5=$("#p5"); if(p5) p5.onclick=prev;
 
+      // --- BOTÃO ENVIAR: submete dados e fotos ao Supabase ---
       const send=$("#send");
       if(send) send.onclick=async ()=>{
         const count=state.uploads.filter(x=>x.file).length;
         if(count<10){
-          toast(`Selecione as 10 fotos. Atualmente: ${count}/10`);
-          return;
+          toast(`Selecione as 10 fotos. Atualmente: ${count}/10`); return;
         }
         send.disabled=true;
         send.textContent="ENVIANDO...";
@@ -709,19 +844,22 @@
         try{
           toast("Enviando dados...");
 
+          // Monta o payload com todos os dados do formulário
           const payload={
             student_code: state.student_code,
             full_name: state.full_name,
             phone: state.phone || null,
             birth_date: state.birth_date || null,
             sex: state.sex || null,
+            // Converte vírgula para ponto antes de converter para número
             weight_kg: state.weight_kg ? Number(String(state.weight_kg).replace(",", ".")) : null,
             height_cm: state.height_cm ? Number(String(state.height_cm).replace(",", ".")) : null,
             goal: state.goal || null,
             injuries: state.injuries || null,
-            muscle_priority: state.priority
+            muscle_priority: state.priority  // Array de strings salvo como JSONB
           };
 
+          // Insere os dados na tabela e recupera o ID gerado
           const { data, error } = await supabase
             .from(TABLE)
             .insert(payload)
@@ -729,17 +867,18 @@
             .single();
 
           if(error) throw error;
-
           state.submissionId = data.id;
 
           toast("Enviando fotos...");
           const paths = [];
 
+          // Faz upload de cada foto individualmente para o Storage
           for(let i=0;i<10;i++){
             const f=state.uploads[i].file;
             const n=String(i+1).padStart(2,"0");
             const ext=(f.name.split(".").pop()||"jpg").toLowerCase();
             const safeExt = ext.replace(/[^a-z0-9]/g,"") || "jpg";
+            // Caminho no Storage: CODIGO_ALUNO/ID_SUBMISSAO/01.jpg
             const path = `${state.student_code}/${state.submissionId}/${n}.${safeExt}`;
 
             const { error: upErr } = await supabase
@@ -750,6 +889,7 @@
             paths.push(path);
           }
 
+          // Atualiza o registro no banco com os caminhos das fotos
           const { error: up2 } = await supabase
             .from(TABLE)
             .update({ photo_paths: paths })
@@ -758,7 +898,8 @@
           if(up2) throw up2;
 
           toast("Enviado ✅");
-          next();
+          next();  // Avança para a etapa 6 (confirmação)
+
         }catch(err){
           console.error(err);
           alert("Erro ao enviar:\n" + (err?.message || JSON.stringify(err)));
@@ -770,6 +911,7 @@
       };
     }
 
+    // Inicializa o formulário na etapa 1
     render();
   </script>
 </body>
