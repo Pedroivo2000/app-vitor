@@ -12,11 +12,11 @@
       Alterar aqui reflete em todo o visual da página.
     ===================================================== */
     :root{
-      --navy:#0B1F3B;                        /* Azul escuro principal */
-      --navy2:#07182B;                       /* Azul ainda mais escuro */
-      --ink:#0a0f18;                         /* Quase preto */
-      --orange:#FF8C00;                      /* Laranja principal */
-      --orange2:#ff7a00;                     /* Laranja mais intenso */
+      --navy:#000000;                        /* Preto principal */
+      --navy2:#000000;                       /* Preto escuro */
+      --ink:#000000;                         /* Quase preto */
+      --orange:#FFD700;                      /* Amarelo principal */
+      --orange2:#FFD700;                     /* Amarelo intenso */
       --white:#ffffff;
       --muted:rgba(255,255,255,.75);         /* Branco semi-transparente */
       --card:rgba(255,255,255,.06);          /* Fundo dos cards */
@@ -30,9 +30,9 @@
     html,body{height:100%}
     body{
       font-family: Arial, sans-serif;
-      /* Gradiente de fundo: brilho laranja suave no topo + azul escuro para baixo */
-      background: radial-gradient(900px 500px at 50% -30%, rgba(255,140,0,.25), transparent 65%),
-                  linear-gradient(180deg, #07152a, #050b14);
+      /* Gradiente de fundo: brilho amarelo suave no topo + preto para baixo */
+      background: radial-gradient(900px 500px at 50% -30%, rgba(255,215,0,.25), transparent 65%),
+                  linear-gradient(180deg, #000000, #000000);
       color:var(--white);
       overflow-x:hidden;  /* Evita scroll horizontal */
     }
@@ -49,7 +49,7 @@
       position:sticky;top:10px;z-index:10;
       display:flex;align-items:center;justify-content:space-between;gap:12px;
       padding:14px 14px;
-      background:linear-gradient(180deg, rgba(11,31,59,.96), rgba(7,24,43,.92));
+      background:linear-gradient(180deg, rgba(0,0,0,.96), rgba(0,0,0,.92));
       border:1px solid var(--stroke);
       border-radius:24px;
       box-shadow:var(--shadow);
@@ -61,7 +61,7 @@
     .logo{
       width:38px;height:38px;border-radius:999px;
       display:grid;place-items:center;
-      border:2px solid rgba(255,140,0,.85);
+      border:2px solid rgba(255,215,0,.85);
       background:rgba(0,0,0,.15);
       font-weight:900;letter-spacing:.5px;
     }
@@ -85,8 +85,8 @@
       font-size:12px;font-weight:900;
       letter-spacing:.14em;text-transform:uppercase;
       color:rgba(255,255,255,.9);
-      background:rgba(255,140,0,.14);
-      border:1px solid rgba(255,140,0,.28);
+      background:rgba(255,215,0,.14);
+      border:1px solid rgba(255,215,0,.28);
       padding:8px 10px;border-radius:999px;
       white-space:nowrap;
     }
@@ -96,7 +96,7 @@
       height:4px;border-radius:999px;background:rgba(255,255,255,.12);
       overflow:hidden;margin-top:10px
     }
-    .bar > div{height:100%;width:0;background:linear-gradient(90deg, var(--orange), #ffd08a)}
+    .bar > div{height:100%;width:0;background:linear-gradient(90deg, var(--orange), #FFE566)}
 
     /* =====================================================
       CARD PRINCIPAL
@@ -117,7 +117,7 @@
       border-bottom:1px solid rgba(255,255,255,.10);
     }
     .head h1{font-size:42px;line-height:1.02;letter-spacing:.02em;}
-    .head h1 span{color:var(--orange)}   /* Destaque laranja na segunda palavra do título */
+    .head h1 span{color:var(--orange)}   /* Destaque amarelo na segunda palavra do título */
     .head p{
       margin-top:10px;color:var(--muted);line-height:1.45;font-size:14px;
       max-width:60ch;
@@ -136,10 +136,10 @@
       color:rgba(255,255,255,.88);
       cursor:pointer;user-select:none;
     }
-    /* Etapa ativa destacada em laranja */
+    /* Etapa ativa destacada em amarelo */
     .pill.active{
-      border-color:rgba(255,140,0,.45);
-      background:rgba(255,140,0,.16);
+      border-color:rgba(255,215,0,.45);
+      background:rgba(255,215,0,.16);
       color:#fff;font-weight:900;
     }
 
@@ -171,8 +171,8 @@
     input:disabled{
       opacity:.6;
       cursor:not-allowed;
-      background:rgba(255,140,0,.08);    /* Fundo levemente laranja */
-      border-color:rgba(255,140,0,.25);  /* Borda laranja suave */
+      background:rgba(255,215,0,.08);    /* Fundo levemente amarelo */
+      border-color:rgba(255,215,0,.25);  /* Borda amarela suave */
     }
 
     textarea{min-height:92px;resize:vertical}
@@ -196,12 +196,12 @@
       color:#fff;
       border:1px solid rgba(255,255,255,.14);
     }
-    /* Botão primário laranja (ação principal) */
+    /* Botão primário amarelo (ação principal) */
     .btn.primary{
-      background:linear-gradient(180deg, #ff9a1a, #ff7a00);
+      background:linear-gradient(180deg, #FFE033, #FFD700);
       color:#0b0f14;
-      border:1px solid rgba(255,140,0,.45);
-      box-shadow:0 10px 22px rgba(255,140,0,.20);
+      border:1px solid rgba(255,215,0,.45);
+      box-shadow:0 10px 22px rgba(255,215,0,.20);
     }
     .btn:disabled{opacity:.55;cursor:not-allowed}
 
@@ -221,8 +221,8 @@
     .rankNum{
       width:40px;height:40px;border-radius:16px;
       display:grid;place-items:center;
-      background:rgba(255,140,0,.18);
-      border:1px solid rgba(255,140,0,.35);
+      background:rgba(255,215,0,.18);
+      border:1px solid rgba(255,215,0,.35);
       font-weight:900;
     }
     .rankName{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -261,12 +261,12 @@
       display:flex;justify-content:space-between;align-items:center;
     }
 
-    /* Badge/tag laranja (ex: "Exemplo", "Foto 01") */
+    /* Badge/tag amarelo (ex: "Exemplo", "Foto 01") */
     .tag{
       font-size:11px;font-weight:900;
       padding:6px 10px;border-radius:999px;
-      background:rgba(255,140,0,.18);
-      border:1px solid rgba(255,140,0,.28);
+      background:rgba(255,215,0,.18);
+      border:1px solid rgba(255,215,0,.28);
       color:#fff;letter-spacing:.08em;
     }
 
@@ -291,8 +291,8 @@
     .vipBadge{
       display:inline-flex;align-items:center;gap:8px;
       margin-top:10px;padding:10px 14px;border-radius:14px;
-      background:rgba(255,140,0,.12);
-      border:1px solid rgba(255,140,0,.30);
+      background:rgba(255,215,0,.12);
+      border:1px solid rgba(255,215,0,.30);
       font-size:13px;font-weight:900;
       letter-spacing:.12em;text-transform:uppercase;
       color:var(--orange);
@@ -304,7 +304,7 @@
     ===================================================== */
     .toast{
       position:fixed;left:50%;bottom:16px;transform:translateX(-50%);
-      background:rgba(11,31,59,.96);
+      background:rgba(0,0,0,.96);
       border:1px solid rgba(255,255,255,.14);
       padding:12px 14px;border-radius:16px;
       box-shadow:var(--shadow);
@@ -593,7 +593,7 @@
       const emojis = ["🔥","💎","🚀","💪","⚡","🏆","🎯","📈","🛡️"];
       const rows = state.priority.map((name, i)=>`
         <div class="rankItem" style="
-          background:linear-gradient(145deg, rgba(255,140,0,.08), rgba(255,255,255,.04));
+          background:linear-gradient(145deg, rgba(255,215,0,.08), rgba(255,255,255,.04));
           border:1px solid rgba(255,255,255,.08);transition:.25s ease;">
           <div class="rankLeft">
             <div class="rankNum">${i+1}º</div>
