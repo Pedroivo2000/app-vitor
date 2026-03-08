@@ -2,65 +2,98 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
+  <!--
+    viewport-fit=cover: garante que o conteúdo ocupa toda a tela,
+    incluindo as áreas de notch e barra inferior em iPhones
+  -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
   <title>Vitor Freitas</title>
 
+  <!-- ====================================================
+    CONFIGURAÇÕES PWA (Progressive Web App)
+    Permitem que o app seja instalado na tela inicial
+    do celular como se fosse um aplicativo nativo
+  ===================================================== -->
+
+  <!-- Habilita modo app no iOS (sem barra de navegação do Safari) -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
+  <!-- Estilo da barra de status no iOS: translúcida preta -->
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <!-- Nome exibido abaixo do ícone na tela inicial do iOS -->
   <meta name="apple-mobile-web-app-title" content="Vitor Freitas" />
+  <!-- Cor da barra de endereço no Android -->
   <meta name="theme-color" content="#0B1F3B" />
 
+  <!-- Arquivo de manifesto do PWA (define ícone, nome, cores, modo de exibição) -->
   <link rel="manifest" href="/manifest.webmanifest" />
+  <!-- Ícone do app para navegadores -->
   <link rel="icon" type="image/png" sizes="512x512" href="icone.png" />
+  <!-- Ícone do app para tela inicial do iOS -->
   <link rel="apple-touch-icon" sizes="512x512" href="icone.png" />
 
   <style>
+    /* Reset global: remove margens, paddings e usa box-sizing consistente */
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* Garante que html e body ocupam 100% da altura da tela */
     html, body { height: 100%; }
+
     body {
-      overflow: hidden;
+      overflow: hidden;              /* Remove scroll da página */
       font-family: Arial, sans-serif;
-      background: #0B1F3B;
+      background: #0B1F3B;           /* Cor de fundo azul escuro (fallback) */
       -webkit-overflow-scrolling: auto;
-      overscroll-behavior: none;
-      touch-action: manipulation;
+      overscroll-behavior: none;     /* Impede o "bounce" de scroll no iOS */
+      touch-action: manipulation;    /* Melhora resposta ao toque */
     }
 
-    /* Capa de fundo */
+    /* =====================================================
+      CAPA DE FUNDO
+      A imagem capa.png cobre toda a tela como wallpaper
+    ===================================================== */
     .capa {
-      position: fixed;
-      inset: 0;
+      position: fixed;      /* Fixada na tela, não rola */
+      inset: 0;             /* Ocupa todos os lados (top, right, bottom, left = 0) */
       width: 100vw;
       height: 100vh;
-      object-fit: cover;
-      z-index: 1;
+      object-fit: cover;    /* Redimensiona a imagem para cobrir sem distorcer */
+      z-index: 1;           /* Camada 1 — fica atrás de tudo */
     }
 
-    /* Overlay escuro sobre a capa */
+    /* =====================================================
+      OVERLAY ESCURO
+      Gradiente transparente em cima da capa para escurecer
+      a parte inferior e destacar o formulário de login
+    ===================================================== */
     .overlay {
       position: fixed;
       inset: 0;
-      z-index: 2;
+      z-index: 2;           /* Camada 2 — fica sobre a capa */
       background: linear-gradient(
         to bottom,
-        rgba(7, 24, 43, 0.45) 0%,
-        rgba(7, 24, 43, 0.75) 60%,
-        rgba(7, 24, 43, 0.97) 100%
+        rgba(7, 24, 43, 0.45) 0%,    /* Topo: levemente escuro */
+        rgba(7, 24, 43, 0.75) 60%,   /* Meio: mais escuro */
+        rgba(7, 24, 43, 0.97) 100%   /* Base: quase opaco — onde fica o login */
       );
     }
 
-    /* Container do login */
+    /* =====================================================
+      CONTAINER DO LOGIN
+      Posiciona o card de login na parte inferior da tela
+    ===================================================== */
     .login-box {
       position: fixed;
       inset: 0;
-      z-index: 3;
+      z-index: 3;           /* Camada 3 — fica sobre o overlay */
       display: flex;
-      align-items: flex-end;
+      align-items: flex-end;    /* Alinha o card na parte inferior */
       justify-content: center;
+      /* Padding inferior respeita a safe area (barra home do iPhone) */
       padding: 0 20px calc(40px + env(safe-area-inset-bottom));
     }
 
+    /* Card branco do login, centralizado e com largura máxima */
     .login-card {
       width: 100%;
       max-width: 420px;
@@ -69,6 +102,7 @@
       gap: 14px;
     }
 
+    /* Texto "Digite seu código de acesso" acima do campo */
     .login-label {
       font-size: 12px;
       font-weight: 900;
@@ -78,13 +112,14 @@
       text-align: center;
     }
 
+    /* Campo de texto para digitar o código VF-000 */
     .input-wrap input {
       width: 100%;
       padding: 20px 20px;
       font-size: 22px;
       font-weight: 900;
       letter-spacing: .18em;
-      text-transform: uppercase;
+      text-transform: uppercase;   /* Força letras maiúsculas visualmente */
       text-align: center;
       background: rgba(255, 255, 255, .08);
       border: 1.5px solid rgba(255, 255, 255, .18);
@@ -92,41 +127,47 @@
       color: #fff;
       outline: none;
       transition: border-color .2s, background .2s;
-      -webkit-appearance: none;
+      -webkit-appearance: none;    /* Remove estilo padrão do Safari */
     }
 
+    /* Placeholder (texto de exemplo quando o campo está vazio) */
     .input-wrap input::placeholder {
       color: rgba(255, 255, 255, .30);
       font-weight: 700;
       letter-spacing: .12em;
     }
 
+    /* Estilo quando o campo está em foco (selecionado) */
     .input-wrap input:focus {
-      border-color: rgba(255, 140, 0, .70);
-      background: rgba(255, 140, 0, .07);
+      border-color: rgba(255, 140, 0, .70);   /* Borda laranja */
+      background: rgba(255, 140, 0, .07);     /* Fundo levemente laranja */
     }
 
+    /* Estilo de erro: borda vermelha + animação de shake */
     .input-wrap input.erro {
       border-color: rgba(239, 68, 68, .80);
       background: rgba(239, 68, 68, .07);
-      animation: shake .35s ease;
+      animation: shake .35s ease;   /* Tremida para indicar erro */
     }
 
+    /* Mensagem de erro abaixo do campo */
     .erro-msg {
       margin-top: -6px;
       font-size: 12px;
       font-weight: 900;
       letter-spacing: .10em;
       text-transform: uppercase;
-      color: #ef4444;
+      color: #ef4444;           /* Vermelho */
       text-align: center;
       min-height: 18px;
-      opacity: 0;
+      opacity: 0;               /* Invisível por padrão */
       transition: opacity .2s;
     }
 
+    /* Classe adicionada via JS para exibir a mensagem de erro */
     .erro-msg.show { opacity: 1; }
 
+    /* Animação de tremida horizontal para indicar erro no campo */
     @keyframes shake {
       0%,100% { transform: translateX(0); }
       20%      { transform: translateX(-8px); }
@@ -135,6 +176,7 @@
       80%      { transform: translateX(5px); }
     }
 
+    /* Botão principal "Acessar" */
     button.acessar {
       width: 100%;
       padding: 20px;
@@ -142,7 +184,7 @@
       font-weight: 900;
       letter-spacing: .08em;
       text-transform: uppercase;
-      background: linear-gradient(180deg, #ff9a1a, #ff7a00);
+      background: linear-gradient(180deg, #ff9a1a, #ff7a00);  /* Gradiente laranja */
       color: #0b0f14;
       border: 0;
       border-radius: 18px;
@@ -151,27 +193,36 @@
       transition: opacity .15s, transform .15s;
     }
 
+    /* Efeito ao pressionar o botão */
     button.acessar:active  { transform: scale(.97); opacity: .9; }
+    /* Estado desabilitado (durante verificação do código) */
     button.acessar:disabled { opacity: .5; cursor: not-allowed; transform: none; }
 
-    /* Iframe */
+    /* =====================================================
+      IFRAME DO POWER BI
+      Carregado dinamicamente após validação do código.
+      Fica invisível até ser ativado pelo JS.
+    ===================================================== */
     #biFrame {
       position: fixed;
       inset: 0;
       width: 100vw;
       height: 100vh;
       border: none;
-      display: none;
+      display: none;    /* Oculto por padrão */
       z-index: 10;
       background: #0B1F3B;
     }
 
-    /* Loading */
+    /* =====================================================
+      TELA DE LOADING
+      Exibida enquanto o dashboard do Power BI carrega
+    ===================================================== */
     #loading {
       position: fixed;
       inset: 0;
-      display: none;
-      z-index: 11;
+      display: none;    /* Oculto por padrão */
+      z-index: 11;      /* Camada mais alta — fica sobre o iframe */
       background: #0B1F3B;
       align-items: center;
       justify-content: center;
@@ -181,63 +232,104 @@
       padding: 24px;
     }
 
+    /* Ícone do app centralizado na tela de loading */
     #loading img { width: 120px; height: 120px; border-radius: 24px; }
 
+    /* Texto "Carregando seus treinos..." */
     #loading .txt { color: #fff; font-size: 18px; font-weight: 700; }
 
+    /* Spinner animado (círculo girando) */
     .spinner {
       width: 34px; height: 34px;
       border-radius: 999px;
-      border: 4px solid rgba(255,255,255,.25);
-      border-top-color: #FF7A00;
+      border: 4px solid rgba(255,255,255,.25);   /* Círculo base cinza */
+      border-top-color: #FF7A00;                 /* Parte laranja que gira */
       animation: spin 1s linear infinite;
     }
 
+    /* Animação de rotação contínua */
     @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 
 <body>
 
+  <!-- Imagem de fundo (capa.png deve estar na raiz do repositório) -->
   <img src="capa.png" class="capa" alt="Vitor Freitas" />
+
+  <!-- Overlay escuro para destacar o formulário de login -->
   <div class="overlay"></div>
 
+  <!-- =====================================================
+    TELA DE LOGIN
+    Exibida ao abrir o app. O aluno digita seu código
+    exclusivo (formato VF-000) para acessar o dashboard.
+  ===================================================== -->
   <div class="login-box" id="loginBox">
     <div class="login-card">
       <div class="login-label">Digite seu código de acesso</div>
+
       <div class="input-wrap">
         <input
           id="codigoInput"
           type="text"
           placeholder="VF-000"
-          maxlength="6"
-          autocomplete="off"
-          autocorrect="off"
-          spellcheck="false"
+          maxlength="6"         <!-- Máximo 6 caracteres: VF-000 -->
+          autocomplete="off"    <!-- Desativa sugestões automáticas -->
+          autocorrect="off"     <!-- Desativa autocorreção -->
+          spellcheck="false"    <!-- Desativa verificação ortográfica -->
           inputmode="text"
         />
       </div>
+
+      <!-- Mensagem de erro (visível apenas quando o código é inválido) -->
       <div class="erro-msg" id="erroMsg"></div>
+
+      <!-- Botão que aciona a função acessar() -->
       <button class="acessar" id="btnAcessar">Acessar</button>
     </div>
   </div>
 
+  <!-- =====================================================
+    IFRAME DO POWER BI
+    O src é definido dinamicamente pelo JS após validar o código.
+    allowfullscreen: permite tela cheia
+    scrolling="no": remove scroll interno do iframe
+  ===================================================== -->
   <iframe id="biFrame" allowfullscreen scrolling="no" referrerpolicy="no-referrer-when-downgrade"></iframe>
 
+  <!-- =====================================================
+    TELA DE LOADING
+    Exibida entre a validação do código e o carregamento
+    completo do dashboard no iframe
+  ===================================================== -->
   <div id="loading">
     <img src="icone.png" alt="Vitor Freitas" />
     <div class="txt">Carregando seus treinos...</div>
     <div class="spinner"></div>
   </div>
 
+  <!-- =====================================================
+    JAVASCRIPT — LÓGICA PRINCIPAL
+    type="module" permite usar import/export (ES Modules)
+  ===================================================== -->
   <script type="module">
+
+    // Importa o cliente do Supabase via CDN (sem necessidade de npm)
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
+    // =====================================================
+    // CONFIGURAÇÕES DO SUPABASE
+    // Credenciais do projeto — anon key é pública (publishable)
+    // =====================================================
     const PROJECT_URL = "https://kjigccxaggwtpoosihbl.supabase.co";
     const ANON_KEY    = "sb_publishable_Rzfa6WmpntiKSlpNDDDgcw_nVcY_Xt7";
     const supabase    = createClient(PROJECT_URL, ANON_KEY);
 
-    const REGEX      = /^VF-\d{3}$/;
+    // Expressão regular que valida o formato VF-000 (VF- + exatamente 3 dígitos)
+    const REGEX = /^VF-\d{3}$/;
+
+    // Referências aos elementos do DOM
     const input      = document.getElementById("codigoInput");
     const btnAcessar = document.getElementById("btnAcessar");
     const erroMsg    = document.getElementById("erroMsg");
@@ -245,56 +337,82 @@
     const loading    = document.getElementById("loading");
     const frame      = document.getElementById("biFrame");
 
-    // Formata automaticamente: VF- fixo + até 3 dígitos
+    // =====================================================
+    // FORMATAÇÃO AUTOMÁTICA DO CAMPO
+    // Garante que o aluno só consiga digitar no formato VF-000
+    // =====================================================
     input.addEventListener("input", () => {
+      // Converte para maiúsculas e remove caracteres inválidos
       let val = input.value.toUpperCase().replace(/[^A-Z0-9-]/g, "");
+
+      // Garante que o valor sempre começa com "VF-"
       if (!val.startsWith("VF-")) {
-        const nums = val.replace(/[^0-9]/g, "");
+        const nums = val.replace(/[^0-9]/g, "");  // Extrai só os números digitados
         val = "VF-" + nums;
       }
+
+      // Limita a 6 caracteres (VF-000)
       input.value = val.slice(0, 6);
+
+      // Remove o estado de erro ao digitar novamente
       setErro("");
     });
 
+    // Ao focar no campo vazio, já insere o prefixo "VF-" para guiar o aluno
     input.addEventListener("focus", () => {
       if (!input.value) input.value = "VF-";
     });
 
+    // Se o aluno sair do campo sem digitar nada além do prefixo, limpa
     input.addEventListener("blur", () => {
       if (input.value === "VF-") input.value = "";
     });
 
+    // Permite acionar o login pressionando Enter
     input.addEventListener("keydown", (e) => {
       if (e.key === "Enter") acessar();
     });
 
+    // Botão "Acessar" aciona a função principal
     btnAcessar.addEventListener("click", acessar);
 
+    // =====================================================
+    // FUNÇÃO DE ERRO
+    // Exibe ou oculta a mensagem de erro e aplica estilo vermelho no campo
+    // =====================================================
     function setErro(msg) {
       erroMsg.textContent = msg;
-      erroMsg.classList.toggle("show", !!msg);
-      input.classList.toggle("erro", !!msg);
+      erroMsg.classList.toggle("show", !!msg);    // Exibe se msg não for vazia
+      input.classList.toggle("erro", !!msg);      // Aplica borda vermelha + shake
     }
 
+    // =====================================================
+    // FUNÇÃO PRINCIPAL: ACESSAR
+    // Valida o código, consulta o Supabase e carrega o Power BI
+    // =====================================================
     async function acessar() {
       const codigo = input.value.trim().toUpperCase();
 
+      // Validação do formato antes de consultar o banco
       if (!REGEX.test(codigo)) {
         setErro("Código inválido. Use o formato VF-000.");
         input.focus();
         return;
       }
 
+      // Desabilita o botão durante a consulta para evitar cliques duplos
       btnAcessar.disabled = true;
       btnAcessar.textContent = "Verificando...";
       setErro("");
 
+      // Consulta a tabela "alunos" no Supabase buscando pelo código digitado
       const { data, error } = await supabase
         .from("alunos")
-        .select("link_powerbi, nome")
-        .eq("codigo", codigo)
-        .single();
+        .select("link_powerbi, nome")   // Busca o link do BI e o nome do aluno
+        .eq("codigo", codigo)           // Filtra pelo código digitado
+        .single();                      // Espera exatamente 1 resultado
 
+      // Se não encontrar o código, exibe erro e reativa o botão
       if (error || !data) {
         setErro("Código não encontrado. Verifique com seu treinador.");
         btnAcessar.disabled = false;
@@ -303,21 +421,25 @@
         return;
       }
 
-      // Esconde tela de login
+      // Código válido — esconde a tela de login
       loginBox.style.display = "none";
       document.querySelector(".capa").style.display = "none";
       document.querySelector(".overlay").style.display = "none";
 
-      // Mostra loading
+      // Exibe a tela de loading enquanto o Power BI carrega
       loading.style.display = "flex";
 
+      // Garante que o parâmetro chromeless=1 está na URL
+      // (remove a interface padrão do Power BI, deixando só o relatório)
       const url = data.link_powerbi.includes("chromeless=1")
         ? data.link_powerbi
         : data.link_powerbi + "&chromeless=1";
 
+      // Define o src do iframe e o exibe
       frame.style.display = "block";
       frame.src = url;
 
+      // Quando o iframe terminar de carregar, remove o loading após 600ms
       frame.onload = () => {
         setTimeout(() => { loading.style.display = "none"; }, 600);
       };
