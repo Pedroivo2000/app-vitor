@@ -3,8 +3,8 @@
   "short_name": "Vitor Freitas",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0B1F3B",
-  "theme_color": "#0B1F3B",
+  "background_color": "#000000",
+  "theme_color": "#000000",
   "icons": [
     {
       "src": "/icone.png",
