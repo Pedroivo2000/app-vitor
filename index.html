@@ -270,16 +270,8 @@
       <div class="login-label">Digite seu código de acesso</div>
 
       <div class="input-wrap">
-        <input
-          id="codigoInput"
-          type="text"
-          placeholder="VF-000"
-          maxlength="6"         <!-- Máximo 6 caracteres: VF-000 -->
-          autocomplete="off"    <!-- Desativa sugestões automáticas -->
-          autocorrect="off"     <!-- Desativa autocorreção -->
-          spellcheck="false"    <!-- Desativa verificação ortográfica -->
-          inputmode="text"
-        />
+        <!-- maxlength=6: limita a VF-000 (6 caracteres) | autocomplete/spellcheck desativados para não interferir -->
+        <input id="codigoInput" type="text" placeholder="Digite seu código" maxlength="6" autocomplete="off" spellcheck="false" inputmode="text" />
       </div>
 
       <!-- Mensagem de erro (visível apenas quando o código é inválido) -->
