@@ -30,7 +30,10 @@
   <!-- Ícone do app para navegadores -->
   <link rel="icon" type="image/png" sizes="512x512" href="icone.png" />
   <!-- Ícone do app para tela inicial do iOS -->
-  <link rel="apple-touch-icon" sizes="512x512" href="icone.png" />
+  <!-- Duas versões garantem máxima compatibilidade: sem tamanho e com 512x512 -->
+  <!-- O caminho com / garante que o iOS encontre o arquivo corretamente -->
+  <link rel="apple-touch-icon" href="/icone.png" />
+  <link rel="apple-touch-icon" sizes="512x512" href="/icone.png" />
 
   <style>
     /* Reset global: remove margens, paddings e usa box-sizing consistente */
