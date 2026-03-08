@@ -133,6 +133,12 @@
       color:#fff;
       outline:none;
     }
+    input:disabled{
+      opacity:.6;
+      cursor:not-allowed;
+      background:rgba(255,140,0,.08);
+      border-color:rgba(255,140,0,.25);
+    }
     textarea{min-height:92px;resize:vertical}
     .hint{margin-top:8px;color:rgba(255,255,255,.70);font-size:12px;line-height:1.4}
 
@@ -234,6 +240,19 @@
     .status.ok{color:#22c55e}
     .status.err{color:#ef4444}
 
+    /* Badge código VIP */
+    .vipBadge{
+      display:inline-flex;align-items:center;gap:8px;
+      margin-top:10px;
+      padding:10px 14px;
+      border-radius:14px;
+      background:rgba(255,140,0,.12);
+      border:1px solid rgba(255,140,0,.30);
+      font-size:13px;font-weight:900;
+      letter-spacing:.12em;text-transform:uppercase;
+      color:var(--orange);
+    }
+
     .toast{
       position:fixed;left:50%;bottom:16px;transform:translateX(-50%);
       background:rgba(11,31,59,.96);
@@ -297,7 +316,6 @@
 
   <div class="toast" id="toast"></div>
 
-  <!-- ✅ SUPABASE via ESM (estável na Vercel) -->
   <script type="module">
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
@@ -308,6 +326,13 @@
     const TABLE       = "anamnese_submissions";
 
     const supabase = createClient(PROJECT_URL, ANON_KEY);
+
+    // ========= LÊ O CÓDIGO DA URL =========
+    const params = new URLSearchParams(window.location.search);
+    const codigoUrl = params.get("aluno")?.trim().toUpperCase() || "";
+
+    // ========= VALIDAÇÃO DO FORMATO VF-000 =========
+    const REGEX_CODIGO = /^VF-\d{3}$/;
 
     // ========= UI =========
     const $ = (s)=>document.querySelector(s);
@@ -334,7 +359,8 @@
     const state = {
       step:0,
       submissionId:null,
-      student_code:"",
+      student_code: codigoUrl, // pré-preenche com código da URL
+      codigoViaUrl: codigoUrl !== "", // flag para bloquear edição se veio pela URL
       full_name:"",
       phone:"",
       birth_date:"",
@@ -369,12 +395,21 @@
     function prev(){ go(state.step-1); }
 
     function step1(){
+      const bloqueado = state.codigoViaUrl;
       return `
         <div class="grid cols2">
           <div>
             <label>Código do aluno *</label>
-            <input id="student_code" placeholder="Ex: VF-001" value="${esc(state.student_code)}"/>
-            <div class="hint">Use exatamente o código informado pelo seu treinador.</div>
+            <input id="student_code"
+              placeholder="Ex: VF-001"
+              value="${esc(state.student_code)}"
+              ${bloqueado ? "disabled" : ""}
+              style="text-transform:uppercase"
+            />
+            ${bloqueado
+              ? `<div class="vipBadge">🔑 Acesso exclusivo · ${esc(state.student_code)}</div>`
+              : `<div class="hint">Use exatamente o código informado pelo seu treinador. Formato: VF-000</div>`
+            }
           </div>
           <div>
             <label>Nome completo *</label>
@@ -442,47 +477,40 @@
     }
 
     function step3(){
-
-  const emojis = ["🔥","💎","🚀","💪","⚡","🏆","🎯","📈","🛡️"];
-
-  const rows = state.priority.map((name, i)=>`
-    <div class="rankItem" style="
-      background:linear-gradient(145deg, rgba(255,140,0,.08), rgba(255,255,255,.04));
-      border:1px solid rgba(255,255,255,.08);
-      transition:.25s ease;
-    ">
-      <div class="rankLeft">
-        <div class="rankNum">${i+1}º</div>
-        <div>
-          <div class="rankName">${esc(name)}</div>
-          <div style="font-size:14px;margin-top:4px">${emojis[i] || "💪"}</div>
+      const emojis = ["🔥","💎","🚀","💪","⚡","🏆","🎯","📈","🛡️"];
+      const rows = state.priority.map((name, i)=>`
+        <div class="rankItem" style="
+          background:linear-gradient(145deg, rgba(255,140,0,.08), rgba(255,255,255,.04));
+          border:1px solid rgba(255,255,255,.08);
+          transition:.25s ease;
+        ">
+          <div class="rankLeft">
+            <div class="rankNum">${i+1}º</div>
+            <div>
+              <div class="rankName">${esc(name)}</div>
+              <div style="font-size:14px;margin-top:4px">${emojis[i] || "💪"}</div>
+            </div>
+          </div>
+          <div class="rankBtns">
+            <button class="miniBtn" data-m="up" data-i="${i}" ${i===0?"disabled":""}>↑</button>
+            <button class="miniBtn" data-m="down" data-i="${i}" ${i===state.priority.length-1?"disabled":""}>↓</button>
+          </div>
         </div>
-      </div>
+      `).join("");
 
-      <div class="rankBtns">
-        <button class="miniBtn" data-m="up" data-i="${i}" ${i===0?"disabled":""}>↑</button>
-        <button class="miniBtn" data-m="down" data-i="${i}" ${i===state.priority.length-1?"disabled":""}>↓</button>
-      </div>
-    </div>
-  `).join("");
-
-  return `
-    <div class="hint">
-      💎 Organize seus grupos musculares por prioridade.<br>
-      🔥 O topo representa seu foco máximo.<br>
-      🚀 Visual Premium apenas para experiência.
-    </div>
-
-    <div class="rankList" style="margin-top:18px">
-      ${rows}
-    </div>
-
-    <div class="btnRow">
-      <button class="btn" id="p3">Voltar</button>
-      <button class="btn primary" id="n3">Próxima etapa</button>
-    </div>
-  `;
-}
+      return `
+        <div class="hint">
+          💎 Organize seus grupos musculares por prioridade.<br>
+          🔥 O topo representa seu foco máximo.<br>
+          🚀 Visual Premium apenas para experiência.
+        </div>
+        <div class="rankList" style="margin-top:18px">${rows}</div>
+        <div class="btnRow">
+          <button class="btn" id="p3">Voltar</button>
+          <button class="btn primary" id="n3">Próxima etapa</button>
+        </div>
+      `;
+    }
 
     function step4(){
       return `
@@ -510,7 +538,6 @@
             <textarea id="q_notes" placeholder="Digite aqui..."></textarea>
           </div>
         </div>
-
         <div class="btnRow">
           <button class="btn" id="p4">Voltar</button>
           <button class="btn primary" id="n4">Próxima etapa</button>
@@ -552,11 +579,9 @@
       return `
         <label>10 Fotos modelo (exemplo)</label>
         <div class="models">${modelos}</div>
-
         <label style="margin-top:18px">Envio das 10 fotos do aluno</label>
         <div class="hint">🔧 Para melhor visualização, utilize o botão de expandir (⤢) localizado na parte inferior do sistema.</div>
         <div class="uploads">${ups}</div>
-
         <div class="btnRow">
           <button class="btn" id="p5">Voltar</button>
           <button class="btn primary" id="send">Enviar</button>
@@ -594,7 +619,13 @@
 
     function bind(){
       // step 1
-      const sc=$("#student_code"); if(sc) sc.oninput=e=>state.student_code=e.target.value.trim().toUpperCase();
+      const sc=$("#student_code");
+      if(sc && !state.codigoViaUrl){
+        sc.oninput=e=>{
+          state.student_code = e.target.value.trim().toUpperCase();
+        };
+      }
+
       const fn=$("#full_name"); if(fn) fn.oninput=e=>state.full_name=e.target.value;
       const ph=$("#phone"); if(ph) ph.oninput=e=>state.phone=e.target.value;
       const bd=$("#birth_date"); if(bd) bd.oninput=e=>state.birth_date=e.target.value;
@@ -603,8 +634,16 @@
       const hc=$("#height_cm"); if(hc) hc.oninput=e=>state.height_cm=e.target.value;
 
       const n1=$("#n1"); if(n1) n1.onclick=()=>{
-        if(!state.student_code || !state.full_name){
-          toast("Preencha o CÓDIGO do aluno e o NOME completo.");
+        if(!state.student_code){
+          toast("Preencha o CÓDIGO do aluno.");
+          return;
+        }
+        if(!REGEX_CODIGO.test(state.student_code)){
+          toast("Código inválido. Use o formato VF-000 (ex: VF-001).");
+          return;
+        }
+        if(!state.full_name){
+          toast("Preencha o NOME completo.");
           return;
         }
         next();
@@ -708,7 +747,6 @@
               .upload(path, f, { upsert:true, contentType:f.type, cacheControl:"3600" });
 
             if(upErr) throw upErr;
-
             paths.push(path);
           }
 
@@ -732,7 +770,6 @@
       };
     }
 
-    // 🔥 garante que roda depois que DOM existe
     render();
   </script>
 </body>
