@@ -448,16 +448,20 @@
 
       } catch (e) {
         // Erro real de conexão/rede/API
-        setErro("Erro de conexão. Tente novamente.");
-        resetBotao();
-        return;
+        } catch (e) {
+  setErro("Erro de conexão. Tente novamente.");
+  resetBotao();
+  return;
+}
       }
 
       // Se houve erro vindo do Supabase, exibe erro de conexão
-      if (error) {
-        setErro("Erro de conexão. Tente novamente.");
-        resetBotao();
-        return;
+if (error) {
+  alert("Erro Supabase: " + (error.message || JSON.stringify(error)));
+  setErro("Erro: " + (error.message || "falha ao conectar"));
+  resetBotao();
+  return;
+}
       }
 
       // Se não encontrar o código, exibe erro específico
