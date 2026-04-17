@@ -142,8 +142,8 @@
 
     /* Estilo quando o campo está em foco (selecionado) */
     .input-wrap input:focus {
-      border-color: rgba(0, 191, 255, .70);   /* Borda azul */
-      background: rgba(0, 191, 255, .07);     /* Fundo levemente azul */
+      border-color: rgba(0, 191, 255, .70);   /* Borda laranja */
+      background: rgba(0, 191, 255, .07);     /* Fundo levemente laranja */
     }
 
     /* Estilo de erro: borda vermelha + animação de shake */
@@ -273,26 +273,11 @@
       <div class="login-label">Digite seu código de acesso</div>
 
       <div class="input-wrap">
-        <!--
-          maxlength=6: limita a VF-000 (6 caracteres)
-          autocomplete/spellcheck desativados para não interferir
-          autocorrect=off: evita correção automática no celular
-          autocapitalize=characters: força teclado em maiúsculo no mobile
-        -->
-        <input
-          id="codigoInput"
-          type="text"
-          placeholder="Digite seu código"
-          maxlength="6"
-          autocomplete="off"
-          autocorrect="off"
-          autocapitalize="characters"
-          spellcheck="false"
-          inputmode="text"
-        />
+        <!-- maxlength=6: limita a VF-000 (6 caracteres) | autocomplete/spellcheck desativados para não interferir -->
+        <input id="codigoInput" type="text" placeholder="Digite seu código" maxlength="6" autocomplete="off" spellcheck="false" inputmode="text" />
       </div>
 
-      <!-- Mensagem de erro (visível apenas quando o código é inválido ou há erro de conexão) -->
+      <!-- Mensagem de erro (visível apenas quando o código é inválido) -->
       <div class="erro-msg" id="erroMsg"></div>
 
       <!-- Botão que aciona a função acessar() -->
@@ -346,8 +331,6 @@
     const loginBox   = document.getElementById("loginBox");
     const loading    = document.getElementById("loading");
     const frame      = document.getElementById("biFrame");
-    const capa       = document.querySelector(".capa");
-    const overlay    = document.querySelector(".overlay");
 
     // =====================================================
     // FORMATAÇÃO AUTOMÁTICA DO CAMPO
@@ -399,21 +382,10 @@
     }
 
     // =====================================================
-    // FUNÇÃO AUXILIAR
-    // Reativa o botão caso a validação falhe
-    // =====================================================
-    function resetBotao() {
-      btnAcessar.disabled = false;
-      btnAcessar.textContent = "Acessar";
-    }
-
-    // =====================================================
     // FUNÇÃO PRINCIPAL: ACESSAR
     // Valida o código, consulta o Supabase e carrega o Power BI
     // =====================================================
     async function acessar() {
-      // trim() remove espaços acidentais
-      // toUpperCase() garante VF-000 mesmo no mobile
       const codigo = input.value.trim().toUpperCase();
 
       // Validação do formato antes de consultar o banco
@@ -428,54 +400,26 @@
       btnAcessar.textContent = "Verificando...";
       setErro("");
 
-      let data = null;
-      let error = null;
+      // Consulta a tabela "alunos" no Supabase buscando pelo código digitado
+      const { data, error } = await supabase
+        .from("alunos")
+        .select("link_powerbi, nome")   // Busca o link do BI e o nome do aluno
+        .eq("codigo", codigo)           // Filtra pelo código digitado
+        .single();                      // Espera exatamente 1 resultado
 
-      try {
-        // =====================================================
-        // CONSULTA AO SUPABASE
-        // maybeSingle() é mais robusto que single() para evitar
-        // falhas desnecessárias, especialmente no mobile
-        // =====================================================
-        const resposta = await supabase
-          .from("alunos")
-          .select("link_powerbi, nome")   // Busca o link do BI e o nome do aluno
-          .eq("codigo", codigo)           // Filtra pelo código digitado
-          .maybeSingle();                 // Aceita 0 ou 1 resultado sem quebrar o fluxo
-
-        data = resposta.data;
-        error = resposta.error;
-
-      } catch (e) {
-        // Erro real de conexão/rede/API
-        } catch (e) {
-  setErro("Erro de conexão. Tente novamente.");
-  resetBotao();
-  return;
-}
-      }
-
-      // Se houve erro vindo do Supabase, exibe erro de conexão
-if (error) {
-  alert("Erro Supabase: " + (error.message || JSON.stringify(error)));
-  setErro("Erro: " + (error.message || "falha ao conectar"));
-  resetBotao();
-  return;
-}
-      }
-
-      // Se não encontrar o código, exibe erro específico
-      if (!data) {
+      // Se não encontrar o código, exibe erro e reativa o botão
+      if (error || !data) {
         setErro("Código não encontrado. Verifique com seu treinador.");
-        resetBotao();
+        btnAcessar.disabled = false;
+        btnAcessar.textContent = "Acessar";
         input.focus();
         return;
       }
 
       // Código válido — esconde a tela de login
       loginBox.style.display = "none";
-      capa.style.display = "none";
-      overlay.style.display = "none";
+      document.querySelector(".capa").style.display = "none";
+      document.querySelector(".overlay").style.display = "none";
 
       // Exibe a tela de loading enquanto o Power BI carrega
       loading.style.display = "flex";
@@ -490,18 +434,8 @@ if (error) {
       frame.style.display = "block";
       frame.src = url;
 
-      // =====================================================
-      // FALLBACK DE SEGURANÇA
-      // Se o iframe demorar demais, o loading some sozinho
-      // para evitar tela travada permanentemente
-      // =====================================================
-      const fallbackTempo = setTimeout(() => {
-        loading.style.display = "none";
-      }, 8000);
-
       // Quando o iframe terminar de carregar, remove o loading após 600ms
       frame.onload = () => {
-        clearTimeout(fallbackTempo);
         setTimeout(() => { loading.style.display = "none"; }, 600);
       };
     }
